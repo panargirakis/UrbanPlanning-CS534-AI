@@ -18,6 +18,14 @@ public class Terrain
     }
 
     /*
+    * setBuilding()
+    * Sets the given building on this tile.
+    */
+	public void setBuilding(BuildingTile building) {
+        this.building = building;
+	}
+
+    /*
     * getValue()
     * Returns the value of this specific terrain tile based on buildings on it and neighboring tiles.
     */
@@ -30,13 +38,5 @@ public class Terrain
 
 		return value;
     }
-
-    /*
-    * setBuilding()
-    * Returns the value of this specific terrain tile based on buildings on it and neighboring tiles.
-    */
-	public void setBuilding(BuildingTile building) {
-        this.building = building;
-	}
     
 }

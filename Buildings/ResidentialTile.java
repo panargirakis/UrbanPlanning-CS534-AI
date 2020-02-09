@@ -11,6 +11,5 @@ public  class ResidentialTile implements BuildingTile
         // TODO Auto-generated method stub
         return 0;
     }
-
-
+    
 }
