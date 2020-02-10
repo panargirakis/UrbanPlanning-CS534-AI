@@ -19,7 +19,6 @@ public class Terrain
     /* Terrain Constructor */
     public Terrain(String type, int difficulty){
         this.type = type;
-        //this.building = building; - I think for generating the terrain, we should not be initializing the building. Rather, do it in setBuilding() to be called when the buildings are actually placed.
         this.difficulty = difficulty;
     }
 
@@ -35,15 +34,10 @@ public class Terrain
     * getValue()
     * Returns the value of this specific terrain tile based on buildings on it and neighboring tiles.
     */
-	public int getValue(int toxicWithinTwoSquares, int scenicWithinTwoSquares, int industrialWithinTwoSquares, int industrialWithinThreeSquares, int residentialWithinThreeSquares, int commercialWithinTwoSquares, int commercialWithinThreeSquares) {
+	public int getValue(UrbanMap map, int row, int col) {
 
-        // The primary source of the value of a terrain is the from the building on it.
-        int value = this.building.getValueOfBuilding(toxicWithinTwoSquares, scenicWithinTwoSquares, industrialWithinTwoSquares, industrialWithinThreeSquares, residentialWithinThreeSquares, commercialWithinTwoSquares, commercialWithinThreeSquares);
-
-        // Each Square has its own dfficulty which is a penalty on the value.
-        value -= difficulty;
-
-		return value;
+        return this.building.getValueOfBuilding(map, row, col, this.difficulty);
+        
     }
     
 }

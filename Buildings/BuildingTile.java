@@ -1,5 +1,7 @@
 package Buildings;
 
+import Map.UrbanMap;
+
 public interface BuildingTile
 {
     
@@ -15,6 +17,6 @@ public interface BuildingTile
     * getValueOfBuilding()
     * Returns the value of this building based on surrounding tiles.
     */
-    public int getValueOfBuilding(int scenicNeighbors, int toxicNeighbors, int industrialWithinTwoSquares, int industrialWithinThreeSquares, int residentialWithinThreeSquares, int commercialWithinTwoSquares, int commercialWithinThreeSquares);
+    public int getValueOfBuilding(UrbanMap map, int row, int col, int difficulty);
 
 }

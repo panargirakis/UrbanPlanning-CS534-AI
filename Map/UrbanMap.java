@@ -2,13 +2,14 @@ package Map;
 
 import Buildings.ResidentialTile;
 
-public class Map
+public class UrbanMap
 {
 
+    // Terrain 2D Array
     private Terrain terrain[][];
 
     /* Map Constructor */
-    public Map(String mapFileToParse){
+    public UrbanMap(String mapFileToParse){
         // Right now takes a string with all the terrain. May want to update to be a different input type?
         this.generateMapTerrain(mapFileToParse);
     }
@@ -54,15 +55,7 @@ public class Map
             for(int col = 0; col < this.terrain[row].length; col++){
 
                 // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.terrain[row][col].getValue(
-                    toxicWithinTwoSquares(row, col),
-                    scenicWithinTwoSquares(row, col),
-                    industrialWithinTwoSquares(row, col),
-                    industrialWithinThreeSquares(row, col),
-                    residentialWithinThreeSquares(row, col),
-                    commercialWithinTwoSquares(row,col),
-                    commercialWithinThreeSquares(row, col)
-                );
+                mapValue += this.terrain[row][col].getValue(this, row, col);
 
             }
         }
