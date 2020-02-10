@@ -5,6 +5,12 @@ import Buildings.BuildingTile;
 public class Terrain
 {
 
+    /*
+    * X:  former toxic waste site.  Industrial zones within 2 tiles take a penalty of -10.  Commercial and residential zones within 2 tiles take a penalty of -20.  You cannot build directly on a toxic waste site.
+    * S:  scenic view.  Residential zones within 2 tiles gain a bonus of 10 points.  If you wish, you can build on a scenic site but it destroys the view.  Building on a scenic view has a cost of 1.
+    * 1...9:  how difficult it is to build on that square.  To build a zone on any square costs 2+difficulty.  So building a Commercial zone on a square of difficulty 6 costs 8 points.  You will receive a penalty of that many points to put any zone on that square.  
+    */
+
     // types: "Toxic", "Scenic", "Standard"
     String type; // Enum?
     BuildingTile building;
@@ -29,9 +35,10 @@ public class Terrain
     * getValue()
     * Returns the value of this specific terrain tile based on buildings on it and neighboring tiles.
     */
-	public int getValue(int toxicNeighbors, int scenicNeighbors, int industrialNeighbors, int residentialNeighbors,int commercialNeighbors) {
+	public int getValue(int toxicWithinTwoSquares, int scenicWithinTwoSquares, int industrialWithinTwoSquares, int industrialWithinThreeSquares, int residentialWithinThreeSquares, int commercialWithinTwoSquares, int commercialWithinThreeSquares) {
 
-        int value = this.building.getValueOfBuilding();
+        // The primary source of the value of a terrain is the from the building on it.
+        int value = this.building.getValueOfBuilding(toxicWithinTwoSquares, scenicWithinTwoSquares, industrialWithinTwoSquares, industrialWithinThreeSquares, residentialWithinThreeSquares, commercialWithinTwoSquares, commercialWithinThreeSquares);
 
         // Each Square has its own dfficulty which is a penalty on the value.
         value -= difficulty;
