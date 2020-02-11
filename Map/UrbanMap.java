@@ -64,10 +64,10 @@ public class UrbanMap
     }
 
     /*
-    * getToxicNeighbors(row,col)
-    * Returns the number of Toxic terrains within 2 Manhattan Distances.
+    * getToxicNeighbors(n,row,col)
+    * Returns the number of Toxic terrains within n Manhattan Distances.
     */
-    public int toxicWithinTwoSquares(int row, int col){
+    public int getToxicNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check its type. Increment when Toxic.
 
@@ -76,9 +76,9 @@ public class UrbanMap
 
     /*
     * getScenicNeighbors(row,col)
-    * Returns the number of Scenic terrains within 2 Manhattan Distances.
+    * Returns the number of Scenic terrains within n Manhattan Distances.
     */
-    public int scenicWithinTwoSquares(int row, int col){
+    public int getScenicNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check its type. Increment when Scenic.
         // UNLESS there is a building on the scenic view. Then, the view is destroyed and it is no longer scenic.
@@ -87,10 +87,10 @@ public class UrbanMap
     }
 
     /*
-    * industrialWithinTwoSquares(row,col)
-    * Returns the number of Industrial Building Tiles within 2 Manhattan Distances.
+    * getIndustrialNeighbors(n,row,col)
+    * Returns the number of Industrial Building Tiles within n Manhattan Distances.
     */
-    public int industrialWithinTwoSquares(int row, int col){
+    public int getIndustrialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Industrial.
 
@@ -98,44 +98,21 @@ public class UrbanMap
     }
 
     /*
-    * industrialWithinThreeSquares(row,col)
-    * Returns the number of Industrial Building Tiles within 3 Manhattan Distances.
+    * getResidentialNeighbors(n,row,col)
+    * Returns the number of Residential Building Tiles within n Manhattan Distances.
     */
-    public int industrialWithinThreeSquares(int row, int col){
-
-        // Iterate trough the requisite terrain elements and check the building type on it. Increment when Industrial.
-
-        return 0;
-    }
-
-    /*
-    * residentialWithinThreeSquares(row,col)
-    * Returns the number of Residential Building Tiles within 3 Manhattan Distances.
-    */
-    public int residentialWithinThreeSquares(int row, int col){
+    public int getResidentialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Residential.
-        // THREE Manahattan Distances
 
         return 0;
     }
 
     /*
-    * commercialWithinTwoSquares(row,col)
-    * Returns the number of Commercial Building Tiles within 2 Manhattan Distances.
+    * getCommercialNeighbors(n,row,col)
+    * Returns the number of Commercial Building Tiles within n Manhattan Distances.
     */
-    public int commercialWithinTwoSquares(int row, int col){
-
-        // Iterate trough the requisite terrain elements and check the building type on it. Increment when Commercial.
-
-        return 0;
-    }
-
-    /*
-    * commercialWithinThreeSquares(row,col)
-    * Returns the number of Commercial Building Tiles within 3 Manhattan Distances.
-    */
-    public int commercialWithinThreeSquares(int row, int col){
+    public int getCommercialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Commercial.
 
