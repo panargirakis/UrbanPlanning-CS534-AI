@@ -21,7 +21,7 @@ public class UrbanMap
     // max residential
     int maxResidential;
 
-    // Terrain 2D Array
+    // Terrain 2D Array (changed to nested arraylist, easier to populate)
     private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
@@ -39,7 +39,7 @@ public class UrbanMap
     */
     private void generateMapTerrain(String mapFileToParse){
         // Based on Width and Height of map (extraced from file):
-        terrain = new ArrayList<ArrayList<Terrain>>();
+        this.terrain = new ArrayList<ArrayList<Terrain>>();
 
         try {
             CSVReader csvReader = new CSVReader(new FileReader(mapFileToParse));
@@ -50,31 +50,34 @@ public class UrbanMap
                     List<String> line = Arrays.asList(values);
                     System.out.println(line);
 
-                    if (lineIndex == 0)
+                    if (lineIndex == 0) // parse max industrial
                         maxIndustrial = Integer.parseInt(line.get(0));
-                    else if (lineIndex == 1)
+                    else if (lineIndex == 1) // parse max commercial
                         maxCommercial = Integer.parseInt(line.get(0));
-                    else if (lineIndex == 2)
+                    else if (lineIndex == 2) // parse max residential
                         maxResidential = Integer.parseInt(line.get(0));
-                    else {
+                    else { // parse map
                         ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
+
+                        // go through everything in the line and create terrain
                         for (int colIndex = 0; colIndex < line.size(); colIndex++) {
                             lineOfTerrain.add(new Terrain(line.get(colIndex)));
                         }
-                        terrain.add(lineOfTerrain);
+                        this.terrain.add(lineOfTerrain); // add populated line to terrain
                     }
 
                     lineIndex++;
                 }
             }
-            catch (IOException e) {
+            catch (IOException e) { // handle IO exception from readNext()
                 System.out.println(e.getMessage());
             }
         }
-        catch (FileNotFoundException e) {
+        catch (FileNotFoundException e) { // handle FileNotFoundException
             System.out.println(e.getMessage());
         }
-        System.out.println("Done parsing map");
+
+        // done parsing map!!
     }
 
     /*
