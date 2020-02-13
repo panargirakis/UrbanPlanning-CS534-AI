@@ -7,7 +7,7 @@ public class Main
     // https://docs.google.com/document/d/1rH2Cmk5KzQ7_EN9-3wJejrr8PcwbdFwpYUoCDd6_OPU/edit
     public static void main(String[] args){
 
-        // parameters are the file to read in, and the technique to use - HC and GA
+        // parameters are the file to read in, and the technique to use - HC (Hill Climbing) and GA (Genetic Algorithm)
         String inputFile = args[0];
         String algorithm = args[1];
 

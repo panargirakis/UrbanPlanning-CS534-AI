@@ -1,6 +1,6 @@
-package Buildings;
+package src.main.java.Buildings;
 
-import Map.UrbanMap;
+import src.main.java.Map.UrbanMap;
 
 public class ResidentialTile implements BuildingTile
 {

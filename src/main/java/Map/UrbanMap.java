@@ -82,10 +82,10 @@ public class UrbanMap
 
     /*
     * setBuildingsOnMap()
-    * Places (random? Simulated Annealing? Genetic?) urban layout buildings on the map. To be used/implemented in algorithms.
-    * Probably a temporary method - will need to be updated and changed based on the algorithm.
+    * Places buildings on map randomly.
+    * There are a max number of industrial/residential/commercial zones in each inpout file.
     */
-    public void setBuildingsOnMap(){
+    public void setBuildingsOnMapRandomly(int maxIndustrial, int maxResidential, int maxCommercial){
         // Cannot build directly on a toxic waste site
 
         for(int row = 0; row < this.terrain.size(); row++){
@@ -125,8 +125,16 @@ public class UrbanMap
     public int getToxicNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check its type. Increment when Toxic.
-
-        return 0;
+        int count = 0;
+        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
+            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
+                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    if (manhattan <= n && terrain[i][j].type.equals("toxic")) count++; //if within distance and correct tile, increment
+                }
+            }
+        }
+        return count;
     }
 
     /*
@@ -134,11 +142,19 @@ public class UrbanMap
     * Returns the number of Scenic terrains within n Manhattan Distances.
     */
     public int getScenicNeighbors(int n, int row, int col){
-
+        //STILL NEED TO ACCOUNT FOR IF BUILDING ON TOP OF SCENIC VIEW
         // Iterate trough the requisite terrain elements and check its type. Increment when Scenic.
         // UNLESS there is a building on the scenic view. Then, the view is destroyed and it is no longer scenic.
-
-        return 0;
+        int count = 0;
+        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
+            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
+                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    if (manhattan <= n && terrain[i][j].type.equals("scenic")) count++; //if within distance and correct tile, increment
+                }
+            }
+        }
+        return count;
     }
 
     /*
@@ -148,8 +164,16 @@ public class UrbanMap
     public int getIndustrialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Industrial.
-
-        return 0;
+        int count = 0;
+        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
+            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
+                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    if (manhattan <= n && terrain[i][j].type.equals("industrial")) count++; //if within distance and correct tile, increment
+                }
+            }
+        }
+        return count;
     }
 
     /*
@@ -159,8 +183,16 @@ public class UrbanMap
     public int getResidentialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Residential.
-
-        return 0;
+        int count = 0;
+        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
+            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
+                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    if (manhattan <= n && terrain[i][j].type.equals("residential")) count++; //if within distance and correct tile, increment
+                }
+            }
+        }
+        return count;
     }
 
     /*
@@ -170,8 +202,16 @@ public class UrbanMap
     public int getCommercialNeighbors(int n, int row, int col){
 
         // Iterate trough the requisite terrain elements and check the building type on it. Increment when Commercial.
-
-        return 0;
+        int count = 0;
+        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
+            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
+                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    if (manhattan <= n && terrain[i][j].type.equals("commercial")) count++; //if within distance and correct tile, increment
+                }
+            }
+        }
+        return count;
     }
 
 }

@@ -1,4 +1,4 @@
-package IO;
+package src.main.java.IO;
 
 public class Options {
     private boolean isUsingHillClimb;
@@ -12,7 +12,7 @@ public class Options {
     public boolean isUsingHillClimb() {
         return this.isUsingHillClimb;
     }
-
+ 
     public boolean isUsingGeneticAlgorithm() {
         return !this.isUsingHillClimb;
     }
