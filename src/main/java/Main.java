@@ -1,4 +1,6 @@
-import IO.Options;
+package src.main.java;
+
+import src.main.java.IO.Options;
 
 public class Main
 {

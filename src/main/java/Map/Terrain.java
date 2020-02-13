@@ -1,6 +1,6 @@
-package Map;
+package src.main.java.Map;
 
-import Buildings.BuildingTile;
+import src.main.java.Buildings.BuildingTile;
 
 public class Terrain
 {
@@ -37,7 +37,7 @@ public class Terrain
 	public int getValue(UrbanMap map, int row, int col) {
 
         return this.building.getValueOfBuilding(map, row, col, this.difficulty);
-        
+
     }
     
 }

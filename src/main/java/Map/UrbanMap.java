@@ -1,6 +1,6 @@
-package Map;
+package src.main.java.Map;
 
-import Buildings.ResidentialTile;
+import src.main.java.Buildings.ResidentialTile;
 
 public class UrbanMap
 {
