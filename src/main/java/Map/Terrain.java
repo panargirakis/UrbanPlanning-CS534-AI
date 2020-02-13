@@ -1,6 +1,7 @@
 package src.main.java.Map;
 
 import src.main.java.Buildings.BuildingTile;
+import src.main.java.Buildings.NoBuildingTile;
 
 public class Terrain
 {
@@ -12,9 +13,9 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    String type; // Enum?
-    BuildingTile building;
-    int difficulty;
+    private String type;
+    private BuildingTile building;
+    private int difficulty;
 
     /* Terrain Constructor */
     public Terrain(String type, int difficulty){
@@ -38,6 +39,21 @@ public class Terrain
 
         return this.building.getValueOfBuilding(map, row, col, this.difficulty);
 
+    }
+
+    /*
+    * getType()
+    * Returns the type of this tile (Scenic/Toxic/Standard)
+    * If there is a building tile on a scenic tile, this function will return "standard"
+    */
+	public String getType() {
+
+        if(this.type.equals("scenic") && !(this.building instanceof NoBuildingTile)){
+            return "standard";
+        }
+        else {
+            return this.type;
+        }
     }
     
 }

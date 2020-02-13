@@ -27,10 +27,10 @@ public class UrbanMap
 
     /*
     * setBuildingsOnMap()
-    * Places (random? Simulated Annealing? Genetic?) urban layout buildings on the map. To be used/implemented in algorithms.
-    * Probably a temporary method - will need to be updated and changed based on the algorithm.
+    * Places buildings on map randomly.
+    * There are a max number of industrial/residential/commercial zones in each inpout file.
     */
-    public void setBuildingsOnMap(){
+    public void setBuildingsOnMapRandomly(int maxIndustrial, int maxResidential, int maxCommercial){
         // Cannot build directly on a toxic waste site
 
         for(int row = 0; row < this.terrain.length; row++){

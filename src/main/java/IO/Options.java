@@ -12,7 +12,7 @@ public class Options {
     public boolean isUsingHillClimb() {
         return this.isUsingHillClimb;
     }
-
+ 
     public boolean isUsingGeneticAlgorithm() {
         return !this.isUsingHillClimb;
     }
