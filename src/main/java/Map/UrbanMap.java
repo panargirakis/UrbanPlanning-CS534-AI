@@ -1,16 +1,33 @@
 package Map;
 
 import Buildings.ResidentialTile;
+import com.opencsv.CSVReader;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UrbanMap
 {
+    // max allowed industrial
+    int maxIndustrial;
+
+    // max commercial
+    int maxCommercial;
+
+    // max residential
+    int maxResidential;
 
     // Terrain 2D Array
-    private Terrain terrain[][];
+    private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
     public UrbanMap(String mapFileToParse){
         // Right now takes a string with all the terrain. May want to update to be a different input type?
+
         this.generateMapTerrain(mapFileToParse);
     }
 
@@ -22,7 +39,42 @@ public class UrbanMap
     */
     private void generateMapTerrain(String mapFileToParse){
         // Based on Width and Height of map (extraced from file):
-        terrain = new Terrain[0][0];
+        terrain = new ArrayList<ArrayList<Terrain>>();
+
+        try {
+            CSVReader csvReader = new CSVReader(new FileReader(mapFileToParse));
+            String[] values = null;
+            int lineIndex = 0;
+            try {
+                while ((values = csvReader.readNext()) != null) {
+                    List<String> line = Arrays.asList(values);
+                    System.out.println(line);
+
+                    if (lineIndex == 0)
+                        maxIndustrial = Integer.parseInt(line.get(0));
+                    else if (lineIndex == 1)
+                        maxCommercial = Integer.parseInt(line.get(0));
+                    else if (lineIndex == 2)
+                        maxResidential = Integer.parseInt(line.get(0));
+                    else {
+                        ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
+                        for (int colIndex = 0; colIndex < line.size(); colIndex++) {
+                            lineOfTerrain.add(new Terrain(line.get(colIndex)));
+                        }
+                        terrain.add(lineOfTerrain);
+                    }
+
+                    lineIndex++;
+                }
+            }
+            catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Done parsing map");
     }
 
     /*
@@ -33,10 +85,10 @@ public class UrbanMap
     public void setBuildingsOnMap(){
         // Cannot build directly on a toxic waste site
 
-        for(int row = 0; row < this.terrain.length; row++){
-            for(int col = 0; col < this.terrain[row].length; col++){
+        for(int row = 0; row < this.terrain.size(); row++){
+            for(int col = 0; col < this.terrain.get(row).size(); col++){
 
-                terrain[row][col].setBuilding(new ResidentialTile());
+                terrain.get(row).get(col).setBuilding(new ResidentialTile());
 
             }
         }
@@ -51,11 +103,11 @@ public class UrbanMap
         int mapValue = 0;
 
         //Iterate through every Terrain eleemnt of 2D array and check its value
-        for(int row = 0; row < this.terrain.length; row++){
-            for(int col = 0; col < this.terrain[row].length; col++){
+        for(int row = 0; row < this.terrain.size(); row++){
+            for(int col = 0; col < this.terrain.get(row).size(); col++){
 
                 // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.terrain[row][col].getValue(this, row, col);
+                mapValue += this.terrain.get(row).get(col).getValue(this, row, col);
 
             }
         }

@@ -2,6 +2,10 @@ package Map;
 
 import Buildings.BuildingTile;
 
+enum TerrainType {
+    TOXIC, SCENIC, STANDARD;
+}
+
 public class Terrain
 {
 
@@ -12,14 +16,23 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    String type; // Enum?
+    TerrainType type; // Enum?
     BuildingTile building;
     int difficulty;
 
     /* Terrain Constructor */
-    public Terrain(String type, int difficulty){
-        this.type = type;
-        this.difficulty = difficulty;
+    public Terrain(String rawType) {
+        try {
+            this.difficulty = Integer.parseInt(rawType);
+            this.type = TerrainType.STANDARD;
+        }
+        catch (NumberFormatException e) {
+            if (rawType.equals("X"))
+                this.type = TerrainType.TOXIC;
+            else if (rawType.equals("S"))
+                this.type = TerrainType.SCENIC;
+            this.difficulty = 9999;
+        }
     }
 
     /*

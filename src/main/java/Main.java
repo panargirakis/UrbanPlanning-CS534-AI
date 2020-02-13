@@ -1,4 +1,5 @@
 import IO.Options;
+import Map.UrbanMap;
 
 public class Main
 {
@@ -24,5 +25,6 @@ public class Main
 
         Options options = new Options(inputFile, isUsingHC);
 
+        UrbanMap map = new UrbanMap(options.getFileToRead());
     }
 }
