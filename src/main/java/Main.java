@@ -1,3 +1,5 @@
+import Algorithms.AlgorithmManager;
+import Algorithms.Metrics;
 import IO.Options;
 import Map.UrbanMap;
 
@@ -26,5 +28,12 @@ public class Main
         Options options = new Options(inputFile, isUsingHC);
 
         UrbanMap map = new UrbanMap(options.getFileToRead());
+
+        AlgorithmManager solver = new AlgorithmManager(options, map);
+
+        solver.run();
+        Metrics result = solver.getMetrics();
+
+        // then print result back (use WriteResults class)
     }
 }
