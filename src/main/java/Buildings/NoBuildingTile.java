@@ -1,6 +1,6 @@
-package src.main.java.Buildings;
+package Buildings;
 
-import src.main.java.Map.UrbanMap;
+import Map.UrbanMap;
 
 public class NoBuildingTile implements BuildingTile
 {
@@ -13,5 +13,10 @@ public class NoBuildingTile implements BuildingTile
         // There is no penalty or bonus value for not building on a tile.
         return 0;
     }
-    
+
+    @Override
+    public String getType() {
+        return "standard";
+    }
+
 }

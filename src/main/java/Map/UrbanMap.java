@@ -1,7 +1,7 @@
 package Map;
 
-import Buildings.ResidentialTile;
 import com.opencsv.CSVReader;
+
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import Map.Terrain;
+import Buildings.ResidentialTile;
 
 public class UrbanMap
 {
@@ -128,9 +130,10 @@ public class UrbanMap
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain[i][j].type.equals("toxic")) count++; //if within distance and correct tile, increment
+                    if (manhattan <= n && terrain.get(i).get(j).building.getType().equals("toxic"))
+                        count++; //if within distance and correct tile, increment
                 }
             }
         }
@@ -148,9 +151,9 @@ public class UrbanMap
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain[i][j].type.equals("scenic")) count++; //if within distance and correct tile, increment
+                    if (manhattan <= n && terrain.get(i).get(j).building.getType().equals("scenic")) count++; //if within distance and correct tile, increment
                 }
             }
         }
@@ -167,9 +170,9 @@ public class UrbanMap
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain[i][j].type.equals("industrial")) count++; //if within distance and correct tile, increment
+                    if (manhattan <= n && terrain.get(i).get(j).building.getType().equals("industrial")) count++; //if within distance and correct tile, increment
                 }
             }
         }
@@ -186,9 +189,9 @@ public class UrbanMap
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain[i][j].type.equals("residential")) count++; //if within distance and correct tile, increment
+                    if (manhattan <= n && terrain.get(i).get(j).building.getType().equals("residential")) count++; //if within distance and correct tile, increment
                 }
             }
         }
@@ -205,9 +208,9 @@ public class UrbanMap
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.length && j >= 0 && j < terrain[0].length) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain[i][j].type.equals("commercial")) count++; //if within distance and correct tile, increment
+                    if (manhattan <= n && terrain.get(i).get(j).building.getType().equals("commercial")) count++; //if within distance and correct tile, increment
                 }
             }
         }

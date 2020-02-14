@@ -1,6 +1,7 @@
-package src.main.java.Buildings;
+package Buildings;
 
-import src.main.java.Map.UrbanMap;
+import Map.UrbanMap;
+import Buildings.BuildingTile;
 
 public class IndustrialTile implements BuildingTile
 {
@@ -21,5 +22,12 @@ public class IndustrialTile implements BuildingTile
 
         return buildingValue;
     }
-    
+
+    // returns type of building as a string (commercial, residential, industrial)
+    @Override
+    public String getType() {
+        return "industrial";
+    }
+
+
 }

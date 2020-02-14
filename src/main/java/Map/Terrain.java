@@ -1,7 +1,7 @@
-package src.main.java.Map;
+package Map;
 
-import src.main.java.Buildings.BuildingTile;
-import src.main.java.Buildings.NoBuildingTile;
+import Buildings.BuildingTile;
+import Buildings.NoBuildingTile;
 
 enum TerrainType {
     TOXIC, SCENIC, STANDARD;
@@ -59,14 +59,8 @@ public class Terrain
     * Returns the type of this tile (Scenic/Toxic/Standard)
     * If there is a building tile on a scenic tile, this function will return "standard"
     */
-	public String getType() {
-
-        if(this.type.equals("scenic") && !(this.building instanceof NoBuildingTile)){
-            return "standard";
-        }
-        else {
-            return this.type;
-        }
+	public TerrainType getType() {
+        return this.type;
     }
 
 }
