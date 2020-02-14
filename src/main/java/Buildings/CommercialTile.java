@@ -26,8 +26,8 @@ public class CommercialTile implements BuildingTile
     }
 
     @Override
-    public String getType() {
-        return "commercial";
+    public BuildingType getType() {
+        return BuildingType.COMMERCIAL;
     }
 
 }

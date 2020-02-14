@@ -20,6 +20,6 @@ public interface BuildingTile
     public int getValueOfBuilding(UrbanMap map, int row, int col, int difficulty);
 
     // returns industrial, commercial, residential
-    public String getType();
+    public BuildingType getType();
 
 }

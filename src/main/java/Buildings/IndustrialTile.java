@@ -25,8 +25,8 @@ public class IndustrialTile implements BuildingTile
 
     // returns type of building as a string (commercial, residential, industrial)
     @Override
-    public String getType() {
-        return "industrial";
+    public BuildingType getType() {
+        return BuildingType.INDUSTRIAL;
     }
 
 

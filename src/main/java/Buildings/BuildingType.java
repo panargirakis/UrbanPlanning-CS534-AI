@@ -1,7 +1,7 @@
 package Buildings;
 
 public enum BuildingType {
-    RESIDENTIAL("residential"), COMMERCIAL("commercial"), INDUSTRIAL("industrial");
+    RESIDENTIAL("residential"), COMMERCIAL("commercial"), INDUSTRIAL("industrial"), EMPTY("empty");
 
     private final String name;
 

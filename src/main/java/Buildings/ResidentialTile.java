@@ -28,8 +28,8 @@ public class ResidentialTile implements BuildingTile
     }
 
     @Override
-    public String getType() {
-        return "residential";
+    public BuildingType getType() {
+        return BuildingType.RESIDENTIAL;
     }
 
 }

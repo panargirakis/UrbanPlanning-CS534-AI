@@ -15,8 +15,8 @@ public class NoBuildingTile implements BuildingTile
     }
 
     @Override
-    public String getType() {
-        return "standard";
+    public BuildingType getType() {
+        return BuildingType.EMPTY;
     }
 
 }
