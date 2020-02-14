@@ -1,6 +1,7 @@
 package Map;
 
 import Buildings.BuildingTile;
+import Buildings.BuildingType;
 import Buildings.NoBuildingTile;
 
 enum TerrainType {
@@ -60,7 +61,10 @@ public class Terrain
     * If there is a building tile on a scenic tile, this function will return "standard"
     */
 	public TerrainType getType() {
-        return this.type;
+	    if (this.type == TerrainType.SCENIC && this.building.getType() != BuildingType.EMPTY)
+	        return TerrainType.STANDARD;
+        else
+            return this.type;
     }
 
 }
