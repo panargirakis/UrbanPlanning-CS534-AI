@@ -1,6 +1,7 @@
-package src.main.java.Buildings;
+package Buildings;
 
-import src.main.java.Map.UrbanMap;
+import Map.UrbanMap;
+import Buildings.BuildingTile;
 
 public class ResidentialTile implements BuildingTile
 {
@@ -25,5 +26,10 @@ public class ResidentialTile implements BuildingTile
 
         return buildingValue;
     }
-    
+
+    @Override
+    public BuildingType getType() {
+        return BuildingType.RESIDENTIAL;
+    }
+
 }

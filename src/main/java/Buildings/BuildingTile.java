@@ -1,6 +1,6 @@
-package src.main.java.Buildings;
+package Buildings;
 
-import src.main.java.Map.UrbanMap;
+import Map.UrbanMap;
 
 public interface BuildingTile
 {
@@ -18,5 +18,8 @@ public interface BuildingTile
     * Returns the value of this building based on surrounding tiles.
     */
     public int getValueOfBuilding(UrbanMap map, int row, int col, int difficulty);
+
+    // returns industrial, commercial, residential
+    public BuildingType getType();
 
 }

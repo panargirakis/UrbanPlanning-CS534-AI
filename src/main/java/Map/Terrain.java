@@ -1,7 +1,12 @@
-package src.main.java.Map;
+package Map;
 
-import src.main.java.Buildings.BuildingTile;
-import src.main.java.Buildings.NoBuildingTile;
+import Buildings.BuildingTile;
+import Buildings.BuildingType;
+import Buildings.NoBuildingTile;
+
+enum TerrainType {
+    TOXIC, SCENIC, STANDARD;
+}
 
 public class Terrain
 {
@@ -13,14 +18,23 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    private String type;
-    private BuildingTile building;
-    private int difficulty;
+    TerrainType type; // Enum?
+    BuildingTile building;
+    int difficulty;
 
     /* Terrain Constructor */
-    public Terrain(String type, int difficulty){
-        this.type = type;
-        this.difficulty = difficulty;
+    public Terrain(String rawType) {
+        try {
+            this.difficulty = Integer.parseInt(rawType);
+            this.type = TerrainType.STANDARD;
+        }
+        catch (NumberFormatException e) {
+            if (rawType.equals("X"))
+                this.type = TerrainType.TOXIC;
+            else if (rawType.equals("S"))
+                this.type = TerrainType.SCENIC;
+            this.difficulty = 9999;
+        }
     }
 
     /*
@@ -46,14 +60,11 @@ public class Terrain
     * Returns the type of this tile (Scenic/Toxic/Standard)
     * If there is a building tile on a scenic tile, this function will return "standard"
     */
-	public String getType() {
-
-        if(this.type.equals("scenic") && !(this.building instanceof NoBuildingTile)){
-            return "standard";
-        }
-        else {
+	public TerrainType getType() {
+	    if (this.type == TerrainType.SCENIC && this.building.getType() != BuildingType.EMPTY)
+	        return TerrainType.STANDARD;
+        else
             return this.type;
-        }
     }
-    
+
 }

@@ -1,4 +1,4 @@
-package src.main.java.IO;
+package IO;
 
 public class Options {
     private boolean isUsingHillClimb;
