@@ -123,96 +123,34 @@ public class UrbanMap
     }
 
     /*
-    * getToxicNeighbors(n,row,col)
-    * Returns the number of Toxic terrains within n Manhattan Distances.
-    */
-    public int getToxicNeighbors(int n, int row, int col){
-
-        // Iterate trough the requisite terrain elements and check its type. Increment when Toxic.
+    * getNeighbors(type, n, row, col)
+    * Returns the number of neighbors of given type within n Manhattan distances
+     */
+    public int getNeighbors(String type, int n, int row, int col) {
+        // Iterate trough the requisite terrain elements and check its type. Increment when correct type.
+        TerrainType tType;
+        BuildingType bType;
+        if (type.equals("RESIDENTIAL")||type.equals("INDUSTRIAL")||type.equals("COMMERCIAL")) {
+            tType = TerrainType.STANDARD;
+            bType = BuildingType.valueOf(type);
+        }
+        else {
+            tType = TerrainType.valueOf(type);
+            bType = BuildingType.EMPTY;
+        }
         int count = 0;
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
+                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(row).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain.get(i).get(j).getType() == TerrainType.TOXIC)
+                    if (type.equals("RESIDENTIAL")||type.equals("INDUSTRIAL")||type.equals("COMMERCIAL")) { //if checking for buildings terrain doesn't matter
+                        if (manhattan <= n && terrain.get(i).get(j).building.getType() == bType);
                         count++; //if within distance and correct tile, increment
-                }
-            }
-        }
-        return count;
-    }
-
-    /*
-    * getScenicNeighbors(row,col)
-    * Returns the number of Scenic terrains within n Manhattan Distances.
-    */
-    public int getScenicNeighbors(int n, int row, int col){
-        //STILL NEED TO ACCOUNT FOR IF BUILDING ON TOP OF SCENIC VIEW
-        // Iterate trough the requisite terrain elements and check its type. Increment when Scenic.
-        // UNLESS there is a building on the scenic view. Then, the view is destroyed and it is no longer scenic.
-        int count = 0;
-        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
-            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
-                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain.get(i).get(j).getType() == TerrainType.SCENIC) count++; //if within distance and correct tile, increment
-                }
-            }
-        }
-        return count;
-    }
-
-    /*
-    * getIndustrialNeighbors(n,row,col)
-    * Returns the number of Industrial Building Tiles within n Manhattan Distances.
-    */
-    public int getIndustrialNeighbors(int n, int row, int col){
-
-        // Iterate trough the requisite terrain elements and check the building type on it. Increment when Industrial.
-        int count = 0;
-        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
-            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
-                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain.get(i).get(j).building.getType() == BuildingType.INDUSTRIAL) count++; //if within distance and correct tile, increment
-                }
-            }
-        }
-        return count;
-    }
-
-    /*
-    * getResidentialNeighbors(n,row,col)
-    * Returns the number of Residential Building Tiles within n Manhattan Distances.
-    */
-    public int getResidentialNeighbors(int n, int row, int col){
-
-        // Iterate trough the requisite terrain elements and check the building type on it. Increment when Residential.
-        int count = 0;
-        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
-            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
-                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain.get(i).get(j).building.getType() == BuildingType.RESIDENTIAL) count++; //if within distance and correct tile, increment
-                }
-            }
-        }
-        return count;
-    }
-
-    /*
-    * getCommercialNeighbors(n,row,col)
-    * Returns the number of Commercial Building Tiles within n Manhattan Distances.
-    */
-    public int getCommercialNeighbors(int n, int row, int col){
-
-        // Iterate trough the requisite terrain elements and check the building type on it. Increment when Commercial.
-        int count = 0;
-        for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
-            for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
-                if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
-                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
-                    if (manhattan <= n && terrain.get(i).get(j).building.getType() == BuildingType.COMMERCIAL) count++; //if within distance and correct tile, increment
+                    }
+                    else { //otherwise need to check terrain and building
+                        if (manhattan <= n && terrain.get(i).get(j).getType() == tType && terrain.get(i).get(j).building.getType() == bType);
+                        count++;
+                    }
                 }
             }
         }

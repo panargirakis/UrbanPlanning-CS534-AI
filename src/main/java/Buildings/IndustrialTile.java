@@ -14,9 +14,9 @@ public class IndustrialTile implements BuildingTile
         int buildingValue = 0;
 
         // Industrial zones within 2 tiles of a Toxic Zone take a penalty of -10.
-        buildingValue += map.getToxicNeighbors(2, row, col) * -10;
+        buildingValue += map.getNeighbors("TOXIC", 2, row, col) * -10;
         // For each industrial tile within 2 squares of idustry, there is a bonus of 2 points.
-        buildingValue += map.getIndustrialNeighbors(2, row, col) * 2;
+        buildingValue += map.getNeighbors("INDUSTRIAL", 2, row, col) * 2;
         // For every building built, there is a difficulty of 2 as well as a difficulty for that square.
         buildingValue -= (2 + difficulty);
 
