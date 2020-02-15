@@ -142,7 +142,7 @@ public class UrbanMap
         for (int i = row - n; i <= row + n; i++) { //check horizontal tiles within n
             for (int j = row - n; j <= row + n; j++) { //check vertical tiles within n
                 if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
-                    int manhattan = Math.abs(row - i) + Math.abs(col - i); //compute manhattan distance
+                    int manhattan = Math.abs(row - i) + Math.abs(col - j); //compute manhattan distance
                     if (type.equals("RESIDENTIAL")||type.equals("INDUSTRIAL")||type.equals("COMMERCIAL")) { //if checking for buildings terrain doesn't matter
                         if (manhattan <= n && terrain.get(i).get(j).building.getType() == bType);
                         count++; //if within distance and correct tile, increment
