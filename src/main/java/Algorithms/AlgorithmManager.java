@@ -15,7 +15,7 @@ public class AlgorithmManager {
         this.map = map;
 
         this.geneticAlgorithm = new GeneticAlgorithm();
-        this.hillClimb = new HillClimb();
+        this.hillClimb = new HillClimb(map); //send through an unpopulated map
     }
 
     public void setOptions(Options options) {
