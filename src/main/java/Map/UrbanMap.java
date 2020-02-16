@@ -219,4 +219,13 @@ public class UrbanMap
         return count;
     }
 
+    // returns the map in a format that can be printed to the final CSV file
+    public ArrayList<ArrayList<String>> getStringRepresentation() {
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+
+        // TODO: need to implement
+
+        return result;
+    }
+
 }
