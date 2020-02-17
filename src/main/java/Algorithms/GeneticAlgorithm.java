@@ -15,7 +15,7 @@ public class GeneticAlgorithm {
     }
 
 
-    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int populationSize, float percentageToMate){
+    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int maxInduint populationSize, float percentageToMate){
 
         // 1: Create x random maps with random buildings
         population.add(generateRandomPopulation(initMap, populationSize));
@@ -30,22 +30,23 @@ public class GeneticAlgorithm {
         return this.population;
     }
 
-    public Map<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize){
+    private Map<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize){
         
         Map randomPopulation = new HashMap<UrbanMap>();
 
         for(int i = 0; i < populationSize; i++){
-            randomPopulation.add(initMap.generateRandomBuildings());
+            randomPopulation.add(initMap.setBuildingsOnMapRandomly());
         }
 
         return randomPopulation;
     }
 
-    public void chooseBestPopulations(float percentageToMate){
+    private void chooseBestPopulations(float percentageToMate){
         //return population;
     }
 
-    public void mateMaps(){
+    // Potential low probability for mutation
+    private void mateMaps(){
         //return population;
     }
 

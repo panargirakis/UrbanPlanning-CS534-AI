@@ -3,3 +3,5 @@
 /build
 .class
 .project
+.vscode
+bin/

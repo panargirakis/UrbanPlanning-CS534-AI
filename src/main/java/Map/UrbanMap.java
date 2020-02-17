@@ -2,17 +2,22 @@ package Map;
 
 import com.opencsv.CSVReader;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
 import Map.Terrain;
 import Buildings.ResidentialTile;
 import Map.TerrainType;
+import Buildings.BuildingTile;
 import Buildings.BuildingType;
+import Buildings.CommercialTile;
+import Buildings.IndustrialTile;
+import Buildings.NoBuildingTile;
 
 public class UrbanMap
 {
@@ -55,11 +60,11 @@ public class UrbanMap
                     System.out.println(line);
 
                     if (lineIndex == 0) // parse max industrial
-                        maxIndustrial = Integer.parseInt(line.get(0));
+                        this.maxIndustrial = Integer.parseInt(line.get(0));
                     else if (lineIndex == 1) // parse max commercial
-                        maxCommercial = Integer.parseInt(line.get(0));
+                        this.maxCommercial = Integer.parseInt(line.get(0));
                     else if (lineIndex == 2) // parse max residential
-                        maxResidential = Integer.parseInt(line.get(0));
+                        this.maxResidential = Integer.parseInt(line.get(0));
                     else { // parse map
                         ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
 
@@ -87,20 +92,70 @@ public class UrbanMap
     /*
     * setBuildingsOnMap()
     * Places buildings on map randomly.
-    * There are a max number of industrial/residential/commercial zones in each inpout file.
+    * There are a max number of industrial/residential/commercial zones in each input file.
     */
-    public void setBuildingsOnMapRandomly(int maxIndustrial, int maxResidential, int maxCommercial){
-        // Cannot build directly on a toxic waste site
+    public void setBuildingsOnMapRandomly(){
 
+        // Randomly set the number of each building to place
+        Random r = new Random();
+        int numIndustrial = r.nextInt(this.maxIndustrial+1);
+        int numResidential = r.nextInt(this.maxResidential+1);
+        int numCommercial = r.nextInt(this.maxCommercial+1);
+
+        int mapWidth = 5; // 5x5 map
+        int mapHeight = 5;
+
+        // Initialize all terrain to have noBuilding
         for(int row = 0; row < this.terrain.size(); row++){
             for(int col = 0; col < this.terrain.get(row).size(); col++){
-
-                terrain.get(row).get(col).setBuilding(new ResidentialTile());
-
+                terrain.get(row).get(col).setBuilding(new NoBuildingTile());
             }
         }
 
+        int maxBuildings = Math.max(this.numIndustrial, this.numCommercial, this.numResidential);
+        for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
+
+            if(numIndustrial > 0){
+                setBuildingRandomly(new IndustrialTile(), mapWidth, mapHeight, r);
+                numIndustrial--;
+            }
+            if(numCommercial > 0){
+                setBuildingRandomly(new CommercialTile(), mapWidth, mapHeight, r);
+                numCommercial--;
+            }
+            if(numResidential > 0){
+                setBuildingRandomly(new ResidentialTile(), mapWidth, mapHeight, r);
+                numResidential--;
+            }
+        }
+        
     }
+
+    /*
+    * setBuildingRandomly()
+    * Sets this building type in a random location on the map.
+    */
+    private void setBuildingRandomly(BuildingTile building, int mapWidth, int mapHeight, Random r){
+        int randRow = r.nextInt(mapWidth);
+        int randCol = r.nextInt(mapHeight);
+
+        // We will try to place the tile 3 times.
+        int numTries = 0;
+        while(numTries < 3){
+
+            if(this.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
+                this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY)) {
+                    // Not a valid spot.
+                    numTries++;
+            }
+            else {
+                // Valid Spot. Set buidling and exit while loop.
+                this.terrain.get(randRow).get(randCol).setBuilding(new IndustrialTile());
+                numTries = 3;
+            }
+        }
+    }
+    
 
     /*
     * getValueOfMap()
