@@ -2,12 +2,7 @@ package Algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.TreeSet;
 
 import Buildings.BuildingType;
 import Map.UrbanMap;
@@ -24,33 +19,47 @@ public class GeneticAlgorithm {
     /*
      * runGeneticAlgorithm() Runs the genetic algorithm on the given terrain map.
      */
-    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int populationSize, float percentageToMate,
-            int numGenerations) {
+    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int populationSize) {
 
-        // For a population size of 50
-        populationSize = 50;
-
-        // Generate 30 new children
-        int numberOfChildren = populationSize - 20; // 30
-        // Keep 10 parents
-        int numberOfParents = populationSize - 40; // 10
-        // Add 10 new random maps to the simualtion (Remainder after parents and children)
-        int numberToGenerate = populationSize - 40; // 10
+        /* SETUP */
+        populationSize = 50;    // For a population size of 50
+        int numChildren = populationSize - 20; // Generate 30 new children
+        int numParents = populationSize - 40;  // Keep 10 parents
+        int numNew = populationSize - 40; // Add 10 new random maps to the simualtion (Remainder after parents and children)
 
         // 1: Create the initial population of x maps with random buildings
-        population.addAll(generateRandomPopulation(initMap, populationSize));
+        List<UrbanMap> initialPopulation = this.generateRandomPopulation(initMap, populationSize);
 
-        // 2: Choose the best x% of them
-        List<UrbanMap> parentPopulation = chooseBestPopulations(percentageToMate, numberOfParents);
-        // 3: 'Mate' the best, choosing buildings randomly from each
-        List<UrbanMap> childPopulation = mateParents(parentPopulation, numberOfChildren);
-        // 4: Generate some x new random maps (Whatever is left over from
-        // percentagToMate)
-        int newPopulationSize = (int) ((int) populationSize * (1 - percentageToMate));
-        population.addAll(generateRandomPopulation(initMap, newPopulationSize));
-        // 5: Repeat z (numGenerations) times
+        /* RUN GENERATIONS */
+        List<UrbanMap> finalGeneration = runGenerations(initMap, initialPopulation, numGenerations, numChildren, numParents, numNew);
 
-        return this.population.get(0);
+        /* CHOOSE BEST MAP FROM FINAL GENERATION */
+        return finalGeneration.get(0);
+    }
+
+    public List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> currentGeneration, int numGenerations, int numChildren, int numParents, int numNew) {
+
+        List<UrbanMap> nextGeneration = currentGeneration;
+
+        for(int generation = 0; generation < numGenerations; generation++){
+
+            // 2: Choose the best (numParents) of them to serve as parents.
+            List<UrbanMap> parentPopulation = chooseBestPopulations(nextGeneration, numParents);
+            // 3: 'Mate' the chosen parents
+            List<UrbanMap> childPopulation = mateParents(parentPopulation, numChildren);
+            // 4: Generate (numNew) new random maps to add new 'Genes' to the pool
+            List<UrbanMap> newRandomMaps = generateRandomPopulation(initMap, numNew);
+
+            // Add the new population to the next generation
+            nextGeneration = new ArrayList<UrbanMap>();
+            nextGeneration.addAll(parentPopulation);
+            nextGeneration.addAll(childPopulation);
+            nextGeneration.addAll(newRandomMaps);
+
+        }// 5: Repeat (numGenerations) times
+
+        // After the loop, current next generation will be the final generation.
+        return nextGeneration;
     }
 
     /*
@@ -65,7 +74,6 @@ public class GeneticAlgorithm {
             // Add randomly generated maps to the list of maps
             randomPopulation.add(new UrbanMap(initMap.randomBuildingsMap()));
         }
-
         return randomPopulation;
     }
 
@@ -73,9 +81,9 @@ public class GeneticAlgorithm {
      * chooseBestPopulations() chooses a list of the best map layouts based on the
      * percentage of maps to choose
      */
-    private List<UrbanMap> chooseBestPopulations(float percentageToMate, int numToKeep) {
+    private List<UrbanMap> chooseBestPopulations(List<UrbanMap> currentGeneration, int numToKeep) {
         // Sort the population
-        Collections.sort(population);
+        Collections.sort(currentGeneration);
         // Take the first x number of elements of the population.
         return population.subList(0, numToKeep);
     }

@@ -19,7 +19,7 @@ import Buildings.CommercialTile;
 import Buildings.IndustrialTile;
 import Buildings.NoBuildingTile;
 
-public class UrbanMap implements Comparable
+public class UrbanMap implements Comparable<UrbanMap>
 {
     // max allowed industrial
     public int maxIndustrial;
@@ -118,7 +118,7 @@ public class UrbanMap implements Comparable
         int mapWidth = 5; // 5x5 map
         int mapHeight = 5;
 
-        // Initialize all terrain to have noBuilding
+        // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < this.terrain.size(); row++){
             for(int col = 0; col < this.terrain.get(row).size(); col++){
                 terrain.get(row).get(col).setBuilding(new NoBuildingTile());
@@ -154,7 +154,7 @@ public class UrbanMap implements Comparable
         int randRow = r.nextInt(mapWidth);
         int randCol = r.nextInt(mapHeight);
 
-        // We will try to place the tile 3 times.
+        // We will try to place the tile 3 times. After that, we will give up.
         int numTries = 0;
         while(numTries < 3){
 
@@ -291,7 +291,6 @@ public class UrbanMap implements Comparable
                         col = 0;
                     }
                 }
-
             }
 
         }
