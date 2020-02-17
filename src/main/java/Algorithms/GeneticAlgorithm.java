@@ -9,6 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
 
+import Buildings.BuildingType;
 import Map.UrbanMap;
 
 public class GeneticAlgorithm {
@@ -88,9 +89,13 @@ public class GeneticAlgorithm {
         // List of children
         List<UrbanMap> childPopulation = new ArrayList<UrbanMap>();
 
-        // Potential low probability for mutation
+        // Potential low probability for mutation?s
 
-        
+        // Mate 2 parent maps
+        for(int i = 1; i < parentPopulation.size(); i = i + 2){
+            childPopulation.add(mateMaps(parentPopulation.get(i-1), parentPopulation.get(i)));
+        }
+        //childPopulation.add(mateMaps());
 
         return childPopulation;
     }
@@ -98,10 +103,25 @@ public class GeneticAlgorithm {
     /*
      * mateMaps() Mate the 2 given maps
      */
-    private UrbanMap mateParents(UrbanMap map1, UrbanMap map2) {
+    private UrbanMap mateMaps(UrbanMap map1, UrbanMap map2) {
 
-        
+        UrbanMap childMap = new UrbanMap(map1);
 
+        // Just choose 50 percent of each parent
+        for(int row = 0; row < childMap.mapWidth; row++){
+            // increments by 2 each time so that only 50% of elements are changed
+            for(int col = 1; col < childMap.mapHeight; col = col + 2){
+                // Set this terrain in the map to be map2's
+                childMap.setTerrain(row,col, map2);
+            }
+        }
+
+        // If there are too many of any building type, just randomly delete some until its ok
+        childMap.ensureSatisfiesBuildingCount(BuildingType.RESIDENTIAL, childMap.maxResidential);
+        childMap.ensureSatisfiesBuildingCount(BuildingType.COMMERCIAL, childMap.maxCommercial);
+        childMap.ensureSatisfiesBuildingCount(BuildingType.INDUSTRIAL, childMap.maxIndustrial);
+
+        return childMap;
     }
 
 }

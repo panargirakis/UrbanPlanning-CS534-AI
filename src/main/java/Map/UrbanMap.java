@@ -22,17 +22,17 @@ import Buildings.NoBuildingTile;
 public class UrbanMap implements Comparable
 {
     // max allowed industrial
-    int maxIndustrial;
+    public int maxIndustrial;
 
     // max commercial
-    int maxCommercial;
+    public int maxCommercial;
 
     // max residential
-    int maxResidential;
+    public int maxResidential;
 
     // map width and height
-    int mapWidth;
-    int mapHeight;
+    public int mapWidth;
+    public int mapHeight;
 
     // Terrain 2D Array (changed to nested arraylist, easier to populate)
     private ArrayList<ArrayList<Terrain>> terrain;
@@ -46,6 +46,8 @@ public class UrbanMap implements Comparable
     // Constructor for new maps created from origional map
     public UrbanMap(UrbanMap origionalMap) {
         this.terrain = origionalMap.terrain;
+        this.mapWidth = origionalMap.mapWidth;
+        this.mapHeight = origionalMap.mapHeight;
     }
 
 	/*
@@ -224,6 +226,11 @@ public class UrbanMap implements Comparable
         return count;
     }
 
+    // Set the terrain at the row,col coordinates to the terrain of the given mapo
+    public void setTerrain(int row, int col, UrbanMap replacementMap) {
+        this.terrain.get(row).get(col).building = terrain.get(row).get(col).building;
+    }
+
     // returns the map in a format that can be printed to the final CSV file
     public ArrayList<ArrayList<String>> getStringRepresentation() {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
@@ -240,4 +247,53 @@ public class UrbanMap implements Comparable
         return (this.getValueOfMap() < compareMap.getValueOfMap()) ? -1 : 1;
     }
 
+	public void ensureSatisfiesBuildingCount(BuildingType buildingType, int maxBuildings){
+
+        Random r = new Random();
+
+        boolean satisfiesMaxBuildings = false;
+        while(!satisfiesMaxBuildings){
+
+            // Get the number of this building type on map
+            int numBuildings = 0;
+            for(int row = 0; row < this.mapWidth; row++){
+                for(int col = 0; col < this.mapHeight; col++){
+                    if(this.terrain.get(row).get(col).building.getType() == buildingType){
+                        numBuildings++;
+                    }
+                }
+            }
+
+            if(numBuildings <= maxBuildings){
+                // All set, the building count is ok
+                satisfiesMaxBuildings = true;
+            }
+            else{
+                // Too many buildings. Need to delete a building and rerun.
+                // These will be the starting coordinates. Once it reaches a correct building tile, it deletes it and quits.
+                int row = r.nextInt(this.mapWidth);
+                int col = r.nextInt(this.mapHeight);
+                boolean stillRunning = true;
+                while(stillRunning){
+
+                    if(this.terrain.get(row).get(col).building.getType() == buildingType) {
+                        // We've deleted a building, now we can leave the loop.
+                        this.terrain.get(row).get(col).building = new NoBuildingTile();
+                        stillRunning = false;
+                    }
+
+                    row++;
+                    col++;
+                    if(row > this.mapWidth){
+                        row = 0;
+                    }
+                    if(col > this.mapHeight){
+                        col = 0;
+                    }
+                }
+
+            }
+
+        }
+    }
 }
