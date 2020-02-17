@@ -19,7 +19,7 @@ import Buildings.CommercialTile;
 import Buildings.IndustrialTile;
 import Buildings.NoBuildingTile;
 
-public class UrbanMap
+public class UrbanMap implements Comparable
 {
     // max allowed industrial
     int maxIndustrial;
@@ -30,17 +30,25 @@ public class UrbanMap
     // max residential
     int maxResidential;
 
+    // map width and height
+    int mapWidth;
+    int mapHeight;
+
     // Terrain 2D Array (changed to nested arraylist, easier to populate)
     private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
     public UrbanMap(String mapFileToParse){
         // Right now takes a string with all the terrain. May want to update to be a different input type?
-
         this.generateMapTerrain(mapFileToParse);
     }
 
-    /*
+    // Constructor for new maps created from origional map
+    public UrbanMap(UrbanMap origionalMap) {
+        this.terrain = origionalMap.terrain;
+    }
+
+	/*
     * generateMap(String mapFileToParse)
     * Takes a text file as a string (or other format) and generates the terrain layout.
     * May belong in IOModule - just have it here temporarily
@@ -68,8 +76,10 @@ public class UrbanMap
                     else { // parse map
                         ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
 
+                        this.mapWidth = line.size();    // Set mapWidth
+
                         // go through everything in the line and create terrain
-                        for (int colIndex = 0; colIndex < line.size(); colIndex++) {
+                        for (int colIndex = 0; colIndex < mapWidth; colIndex++) {
                             lineOfTerrain.add(new Terrain(line.get(colIndex)));
                         }
                         this.terrain.add(lineOfTerrain); // add populated line to terrain
@@ -81,6 +91,7 @@ public class UrbanMap
             catch (IOException e) { // handle IO exception from readNext()
                 System.out.println(e.getMessage());
             }
+            this.mapHeight = (lineIndex - 3);
         }
         catch (FileNotFoundException e) { // handle FileNotFoundException
             System.out.println(e.getMessage());
@@ -94,7 +105,7 @@ public class UrbanMap
     * Places buildings on map randomly.
     * There are a max number of industrial/residential/commercial zones in each input file.
     */
-    public void setBuildingsOnMapRandomly(){
+    public UrbanMap randomBuildingsMap(){
 
         // Randomly set the number of each building to place
         Random r = new Random();
@@ -112,7 +123,8 @@ public class UrbanMap
             }
         }
 
-        int maxBuildings = Math.max(this.numIndustrial, this.numCommercial, this.numResidential);
+        // For the buildings, go through and add a building.
+        int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
             if(numIndustrial > 0){
@@ -128,7 +140,8 @@ public class UrbanMap
                 numResidential--;
             }
         }
-        
+        // This is the modified map - it will be reset the next time randomBuildingsMap() is run.
+        return this;     
     }
 
     /*
@@ -144,7 +157,7 @@ public class UrbanMap
         while(numTries < 3){
 
             if(this.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
-                this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY)) {
+                this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY) {
                     // Not a valid spot.
                     numTries++;
             }
@@ -156,7 +169,6 @@ public class UrbanMap
         }
     }
     
-
     /*
     * getValueOfMap()
     * Returns the value of the map with the current urban layout.
@@ -219,6 +231,13 @@ public class UrbanMap
         // TODO: need to implement
 
         return result;
+    }
+
+    // Allows for a map to be compared to another.
+    @Override
+    public int compareTo(Object o) {
+        UrbanMap compareMap = (UrbanMap) o;
+        return (this.getValueOfMap() < compareMap.getValueOfMap()) ? -1 : 1;
     }
 
 }

@@ -1,53 +1,107 @@
 package Algorithms;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import Map.UrbanMap;
 
 public class GeneticAlgorithm {
 
-    // A HashMap containing the population of maps
-    Map population;
+    // A list containing the population of maps
+    List<UrbanMap> population;
 
-    public GeneticAlgorithm(){
-        population = new HashMap<UrbanMap>();
+    public GeneticAlgorithm() {
+        this.population = new ArrayList<UrbanMap>();
     }
 
+    /*
+     * runGeneticAlgorithm() Runs the genetic algorithm on the given terrain map.
+     */
+    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int populationSize, float percentageToMate,
+            int numGenerations) {
 
-    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int maxInduint populationSize, float percentageToMate){
+        // For a population size of 50
+        populationSize = 50;
 
-        // 1: Create x random maps with random buildings
-        population.add(generateRandomPopulation(initMap, populationSize));
+        // Generate 30 new children
+        int numberOfChildren = populationSize - 20; // 30
+        // Keep 10 parents
+        int numberOfParents = populationSize - 40; // 10
+        // Add 10 new random maps to the simualtion (Remainder after parents and children)
+        int numberToGenerate = populationSize - 40; // 10
+
+        // 1: Create the initial population of x maps with random buildings
+        population.addAll(generateRandomPopulation(initMap, populationSize));
+
         // 2: Choose the best x% of them
-        chooseBestPopulations(percentageToMate);
+        List<UrbanMap> parentPopulation = chooseBestPopulations(percentageToMate, numberOfParents);
         // 3: 'Mate' the best, choosing buildings randomly from each
-        mateMaps();
-        // 4: Generate some x new random maps (Whatever is left over from percentagToMate)
-        population.add(generateRandomPopulation(initMap, populationSize*(1-percentageToMate)));
-        // 5: Repeat z times
+        List<UrbanMap> childPopulation = mateParents(parentPopulation, numberOfChildren);
+        // 4: Generate some x new random maps (Whatever is left over from
+        // percentagToMate)
+        int newPopulationSize = (int) ((int) populationSize * (1 - percentageToMate));
+        population.addAll(generateRandomPopulation(initMap, newPopulationSize));
+        // 5: Repeat z (numGenerations) times
 
-        return this.population;
+        return this.population.get(0);
     }
 
-    private Map<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize){
-        
-        Map randomPopulation = new HashMap<UrbanMap>();
+    /*
+     * generateRandomPopulation() generates a list of maps with random buildings of
+     * the given size.
+     */
+    private List<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize) {
 
-        for(int i = 0; i < populationSize; i++){
-            randomPopulation.add(initMap.setBuildingsOnMapRandomly());
+        List<UrbanMap> randomPopulation = new ArrayList<UrbanMap>();
+
+        for (int i = 0; i < populationSize; i++) {
+            // Add randomly generated maps to the list of maps
+            randomPopulation.add(new UrbanMap(initMap.randomBuildingsMap()));
         }
 
         return randomPopulation;
     }
 
-    private void chooseBestPopulations(float percentageToMate){
-        //return population;
+    /*
+     * chooseBestPopulations() chooses a list of the best map layouts based on the
+     * percentage of maps to choose
+     */
+    private List<UrbanMap> chooseBestPopulations(float percentageToMate, int numToKeep) {
+        // Sort the population
+        Collections.sort(population);
+        // Take the first x number of elements of the population.
+        return population.subList(0, numToKeep);
     }
 
-    // Potential low probability for mutation
-    private void mateMaps(){
-        //return population;
+    /*
+     * mateMaps() Mate the maps in the population of maps to create a new generation
+     * of maps.
+     */
+    private List<UrbanMap> mateParents(List<UrbanMap> parentPopulation, int numberOfChildren) {
+
+        // List of children
+        List<UrbanMap> childPopulation = new ArrayList<UrbanMap>();
+
+        // Potential low probability for mutation
+
+        
+
+        return childPopulation;
+    }
+
+    /*
+     * mateMaps() Mate the 2 given maps
+     */
+    private UrbanMap mateParents(UrbanMap map1, UrbanMap map2) {
+
+        
+
     }
 
 }
