@@ -85,6 +85,20 @@ public class UrbanMap
     }
 
     /*
+    * returns number of rows in map
+     */
+    int getRows() {
+        return terrain.size();
+    }
+
+    /*
+    * returns number of columns in map
+     */
+    int getCols() {
+        return terrain.get(0).size();
+    }
+
+    /*
     * setBuildingsOnMap()
     * Places buildings on map randomly.
     * There are a max number of industrial/residential/commercial zones in each inpout file.
