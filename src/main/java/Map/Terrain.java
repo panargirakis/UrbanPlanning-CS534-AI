@@ -27,6 +27,7 @@ public class Terrain
         try {
             this.difficulty = Integer.parseInt(rawType);
             this.type = TerrainType.STANDARD;
+            this.building = new NoBuildingTile();
         }
         catch (NumberFormatException e) {
             if (rawType.equals("X"))
@@ -34,6 +35,7 @@ public class Terrain
             else if (rawType.equals("S"))
                 this.type = TerrainType.SCENIC;
             this.difficulty = 9999;
+            this.building = new NoBuildingTile();
         }
     }
 
@@ -65,6 +67,10 @@ public class Terrain
 	        return TerrainType.STANDARD;
         else
             return this.type;
+    }
+
+    public BuildingType getBuildingType() {
+	    return this.building.getType();
     }
 
 }
