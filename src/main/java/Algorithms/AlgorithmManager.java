@@ -28,11 +28,11 @@ public class AlgorithmManager {
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
-            int numGenerations = 1;
-            int generationSize = 5;
-            int numChildren = 1; // Generate 30 new children
-            int numParents = 2;  // Keep 10 parents
-            int numNew = 4; // Add 10 new random maps to the simualtion (Remainder after parents and children)
+            int numGenerations = 50;
+            int generationSize = 50;
+            int numChildren = 30; // Generate 30 new children
+            int numParents = 20;  // Keep 10 parents
+            int numNew = 10; // Add 10 new random maps to the simualtion (Remainder after parents and children)
             UrbanMap bestMap = this.geneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew);
 
             System.out.println(bestMap);

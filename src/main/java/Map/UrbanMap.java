@@ -112,9 +112,9 @@ public class UrbanMap implements Comparable<UrbanMap>
 
         // Randomly set the number of each building to place
         Random r = new Random();
-        int numIndustrial = r.nextInt(this.maxIndustrial+1);
-        int numResidential = r.nextInt(this.maxResidential+1);
-        int numCommercial = r.nextInt(this.maxCommercial+1);
+        int numIndustrial = 1;//r.nextInt(this.maxIndustrial+1);
+        int numResidential = 1;//r.nextInt(this.maxResidential+1);
+        int numCommercial = 1;//r.nextInt(this.maxCommercial+1);
 
         // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < this.terrain.size(); row++){
@@ -127,13 +127,13 @@ public class UrbanMap implements Comparable<UrbanMap>
         int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
-            if(numIndustrial > 0){
-                setBuildingRandomly(new IndustrialTile(), this.mapWidth, this.mapHeight, r);
-                numIndustrial--;
-            }
             if(numCommercial > 0){
                 setBuildingRandomly(new CommercialTile(), this.mapWidth, this.mapHeight, r);
                 numCommercial--;
+            }
+            if(numIndustrial > 0){
+                setBuildingRandomly(new IndustrialTile(), this.mapWidth, this.mapHeight, r);
+                numIndustrial--;
             }
             if(numResidential > 0){
                 setBuildingRandomly(new ResidentialTile(), this.mapWidth, this.mapHeight, r);
@@ -159,17 +159,15 @@ public class UrbanMap implements Comparable<UrbanMap>
             randRow = r.nextInt(mapHeight);
             randCol = r.nextInt(mapWidth);
 
-            if(this.terrain.get(randRow)
-                    .get(randCol)
-                    .getType() == TerrainType.TOXIC ||
-                    this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY) {
+            if(this.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
+                    this.terrain.get(randRow).get(randCol).building.getType() != BuildingType.EMPTY) {
                 // Not a valid spot.
                 numTries++;
             }
             else {
-                // Valid Spot. Set buidling and exit while loop.
+                // Valid Spot. Set building and exit while loop.
                 this.terrain.get(randRow).get(randCol).setBuilding(new IndustrialTile());
-                numTries = 3;
+                numTries = 6;
             }
         }
     }
@@ -191,6 +189,8 @@ public class UrbanMap implements Comparable<UrbanMap>
             }
         }
 
+        //System.out.println(mapValue);
+        
         return mapValue;
     }
 
@@ -270,36 +270,40 @@ public class UrbanMap implements Comparable<UrbanMap>
 	public void ensureSatisfiesBuildingCount(BuildingType buildingType, int maxBuildings){
 
         Random r = new Random();
-
-        boolean satisfiesMaxBuildings = false;
-        while(!satisfiesMaxBuildings){
-
-            // Get the number of this building type on map
-            int numBuildings = 0;
-            for(int row = 0; row < this.mapHeight; row++){
-                for(int col = 0; col < this.mapWidth; col++){
-                    if(this.terrain.get(row).get(col).building.getType() == buildingType){
-                        numBuildings++;
-                    }
+        // Get the number of this building type on map
+        int numBuildings = 0;
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+                if(this.terrain.get(row).get(col).building.getType() == buildingType){
+                    numBuildings++;
                 }
             }
+        }
+
+        // Will loop until the number of buildings is a satisfactory amount
+        boolean satisfiesMaxBuildings = false;
+        while(!satisfiesMaxBuildings){
 
             if(numBuildings <= maxBuildings){
                 // All set, the building count is ok
                 satisfiesMaxBuildings = true;
             }
             else{
-                // Too many buildings. Need to delete a building and rerun.
-                // These will be the starting coordinates. Once it reaches a correct building tile, it deletes it and quits.
-                int row = r.nextInt(this.mapHeight);
-                int col = r.nextInt(this.mapWidth);
-                boolean stillRunning = true;
-                while(stillRunning){
+                // Too many buildings. Need to delete a building and check if it satisfies.
+                int row = 0;
+                int col = 0;
+                boolean deletedBuilding = false;
+                while(!deletedBuilding){
+
+                    // These will be the starting coordinates. Once it reaches a correct building tile, it deletes it and quits.
+                    row = r.nextInt(this.mapHeight);
+                    col = r.nextInt(this.mapWidth);
 
                     if(this.terrain.get(row).get(col).building.getType() == buildingType) {
-                        // We've deleted a building, now we can leave the loop.
-                        this.terrain.get(row).get(col).building = new NoBuildingTile();
-                        stillRunning = false;
+                        this.terrain.get(row).get(col).setBuilding(new NoBuildingTile());
+                        // We've deleted a building, now we can leave the loop and deceremented the number of this building types on the map.
+                        deletedBuilding = true;
+                        numBuildings--;
                     }
 
                     row++;

@@ -29,7 +29,8 @@ public class GeneticAlgorithm {
 
     private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> currentGeneration, int numGenerations, int numChildren, int numParents, int numNew) {
 
-        List<UrbanMap> nextGeneration = currentGeneration;
+        List<UrbanMap> nextGeneration = new ArrayList<UrbanMap>();
+        nextGeneration.addAll(currentGeneration);
 
         for(int generation = 0; generation < numGenerations; generation++){
 
@@ -123,6 +124,8 @@ public class GeneticAlgorithm {
         childMap.ensureSatisfiesBuildingCount(BuildingType.RESIDENTIAL, childMap.maxResidential);
         childMap.ensureSatisfiesBuildingCount(BuildingType.COMMERCIAL, childMap.maxCommercial);
         childMap.ensureSatisfiesBuildingCount(BuildingType.INDUSTRIAL, childMap.maxIndustrial);
+
+        System.out.println(childMap);
 
         return childMap;
     }
