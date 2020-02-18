@@ -1,7 +1,5 @@
 package Map;
 
-import com.opencsv.CSVReader;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,14 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import Map.Terrain;
-import Buildings.ResidentialTile;
-import Map.TerrainType;
+import com.opencsv.CSVReader;
+
 import Buildings.BuildingTile;
 import Buildings.BuildingType;
 import Buildings.CommercialTile;
 import Buildings.IndustrialTile;
 import Buildings.NoBuildingTile;
+import Buildings.ResidentialTile;
 
 public class UrbanMap implements Comparable<UrbanMap>
 {
@@ -44,10 +42,13 @@ public class UrbanMap implements Comparable<UrbanMap>
     }
 
     // Constructor for new maps created from origional map
-    public UrbanMap(UrbanMap origionalMap) {
-        this.terrain = origionalMap.terrain;
-        this.mapWidth = origionalMap.mapWidth;
-        this.mapHeight = origionalMap.mapHeight;
+    public UrbanMap(UrbanMap originalMap) {
+        this.terrain = originalMap.terrain;
+        this.mapWidth = originalMap.mapWidth;
+        this.mapHeight = originalMap.mapHeight;
+        this.maxResidential = originalMap.maxResidential;
+        this.maxCommercial = originalMap.maxCommercial;
+        this.maxIndustrial = originalMap.maxIndustrial;
     }
 
 	/*
@@ -115,9 +116,6 @@ public class UrbanMap implements Comparable<UrbanMap>
         int numResidential = r.nextInt(this.maxResidential+1);
         int numCommercial = r.nextInt(this.maxCommercial+1);
 
-        int mapWidth = 5; // 5x5 map
-        int mapHeight = 5;
-
         // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < this.terrain.size(); row++){
             for(int col = 0; col < this.terrain.get(row).size(); col++){
@@ -130,15 +128,15 @@ public class UrbanMap implements Comparable<UrbanMap>
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
             if(numIndustrial > 0){
-                setBuildingRandomly(new IndustrialTile(), mapWidth, mapHeight, r);
+                setBuildingRandomly(new IndustrialTile(), this.mapWidth, this.mapHeight, r);
                 numIndustrial--;
             }
             if(numCommercial > 0){
-                setBuildingRandomly(new CommercialTile(), mapWidth, mapHeight, r);
+                setBuildingRandomly(new CommercialTile(), this.mapWidth, this.mapHeight, r);
                 numCommercial--;
             }
             if(numResidential > 0){
-                setBuildingRandomly(new ResidentialTile(), mapWidth, mapHeight, r);
+                setBuildingRandomly(new ResidentialTile(), this.mapWidth, this.mapHeight, r);
                 numResidential--;
             }
         }
@@ -151,17 +149,22 @@ public class UrbanMap implements Comparable<UrbanMap>
     * Sets this building type in a random location on the map.
     */
     private void setBuildingRandomly(BuildingTile building, int mapWidth, int mapHeight, Random r){
-        int randRow = r.nextInt(mapWidth);
-        int randCol = r.nextInt(mapHeight);
+        int randRow;
+        int randCol;
 
-        // We will try to place the tile 3 times. After that, we will give up.
+        // We will try to place the tile 6 times. After that, we will give up.
         int numTries = 0;
-        while(numTries < 3){
+        while(numTries < 6){
 
-            if(this.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
-                this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY) {
-                    // Not a valid spot.
-                    numTries++;
+            randRow = r.nextInt(mapHeight);
+            randCol = r.nextInt(mapWidth);
+
+            if(this.terrain.get(randRow)
+                    .get(randCol)
+                    .getType() == TerrainType.TOXIC ||
+                    this.terrain.get(randRow).get(randCol).building.getType() == BuildingType.EMPTY) {
+                // Not a valid spot.
+                numTries++;
             }
             else {
                 // Valid Spot. Set buidling and exit while loop.
@@ -231,6 +234,24 @@ public class UrbanMap implements Comparable<UrbanMap>
         this.terrain.get(row).get(col).building = terrain.get(row).get(col).building;
     }
 
+    // Overides the toString() method. Prints the buildings and value of the map.
+    @Override
+    public String toString(){
+        String result = "";
+
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+                result += this.terrain.get(row).get(col).building.getShortName();
+            }
+            result += "\n";
+        }
+
+        result += "\n\n";
+        result += ("Value: " + this.getValueOfMap());
+        result += "\n";
+        return result;
+    }
+
     // returns the map in a format that can be printed to the final CSV file
     public ArrayList<ArrayList<String>> getStringRepresentation() {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
@@ -242,8 +263,7 @@ public class UrbanMap implements Comparable<UrbanMap>
 
     // Allows for a map to be compared to another.
     @Override
-    public int compareTo(Object o) {
-        UrbanMap compareMap = (UrbanMap) o;
+    public int compareTo(UrbanMap compareMap) {
         return (this.getValueOfMap() < compareMap.getValueOfMap()) ? -1 : 1;
     }
 
@@ -256,8 +276,8 @@ public class UrbanMap implements Comparable<UrbanMap>
 
             // Get the number of this building type on map
             int numBuildings = 0;
-            for(int row = 0; row < this.mapWidth; row++){
-                for(int col = 0; col < this.mapHeight; col++){
+            for(int row = 0; row < this.mapHeight; row++){
+                for(int col = 0; col < this.mapWidth; col++){
                     if(this.terrain.get(row).get(col).building.getType() == buildingType){
                         numBuildings++;
                     }
@@ -271,8 +291,8 @@ public class UrbanMap implements Comparable<UrbanMap>
             else{
                 // Too many buildings. Need to delete a building and rerun.
                 // These will be the starting coordinates. Once it reaches a correct building tile, it deletes it and quits.
-                int row = r.nextInt(this.mapWidth);
-                int col = r.nextInt(this.mapHeight);
+                int row = r.nextInt(this.mapHeight);
+                int col = r.nextInt(this.mapWidth);
                 boolean stillRunning = true;
                 while(stillRunning){
 
@@ -284,10 +304,10 @@ public class UrbanMap implements Comparable<UrbanMap>
 
                     row++;
                     col++;
-                    if(row > this.mapWidth){
+                    if(row >= this.mapHeight){
                         row = 0;
                     }
-                    if(col > this.mapHeight){
+                    if(col >= this.mapWidth){
                         col = 0;
                     }
                 }

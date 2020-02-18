@@ -22,4 +22,7 @@ public interface BuildingTile
     // returns industrial, commercial, residential
     public BuildingType getType();
 
+    // Return a char of the buildingtype this building is.
+	public String getShortName();
+
 }

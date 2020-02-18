@@ -9,26 +9,16 @@ import Map.UrbanMap;
 
 public class GeneticAlgorithm {
 
-    // A list containing the population of maps
-    List<UrbanMap> population;
-
-    public GeneticAlgorithm() {
-        this.population = new ArrayList<UrbanMap>();
-    }
+    // Default Constructor
+    public GeneticAlgorithm() {}
 
     /*
      * runGeneticAlgorithm() Runs the genetic algorithm on the given terrain map.
      */
-    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int populationSize) {
-
-        /* SETUP */
-        populationSize = 50;    // For a population size of 50
-        int numChildren = populationSize - 20; // Generate 30 new children
-        int numParents = populationSize - 40;  // Keep 10 parents
-        int numNew = populationSize - 40; // Add 10 new random maps to the simualtion (Remainder after parents and children)
+    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int generationSize, int numChildren, int numParents, int numNew) {
 
         // 1: Create the initial population of x maps with random buildings
-        List<UrbanMap> initialPopulation = this.generateRandomPopulation(initMap, populationSize);
+        List<UrbanMap> initialPopulation = this.generateRandomPopulation(initMap, generationSize);
 
         /* RUN GENERATIONS */
         List<UrbanMap> finalGeneration = runGenerations(initMap, initialPopulation, numGenerations, numChildren, numParents, numNew);
@@ -37,7 +27,7 @@ public class GeneticAlgorithm {
         return finalGeneration.get(0);
     }
 
-    public List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> currentGeneration, int numGenerations, int numChildren, int numParents, int numNew) {
+    private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> currentGeneration, int numGenerations, int numChildren, int numParents, int numNew) {
 
         List<UrbanMap> nextGeneration = currentGeneration;
 
@@ -85,7 +75,7 @@ public class GeneticAlgorithm {
         // Sort the population
         Collections.sort(currentGeneration);
         // Take the first x number of elements of the population.
-        return population.subList(0, numToKeep);
+        return currentGeneration.subList(0, numToKeep);
     }
 
     /*
@@ -97,13 +87,10 @@ public class GeneticAlgorithm {
         // List of children
         List<UrbanMap> childPopulation = new ArrayList<UrbanMap>();
 
-        // Potential low probability for mutation?s
-
         // Mate 2 parent maps
         for(int i = 1; i < parentPopulation.size(); i = i + 2){
             childPopulation.add(mateMaps(parentPopulation.get(i-1), parentPopulation.get(i)));
         }
-        //childPopulation.add(mateMaps());
 
         return childPopulation;
     }
@@ -115,12 +102,20 @@ public class GeneticAlgorithm {
 
         UrbanMap childMap = new UrbanMap(map1);
 
+        int splitPoint = map1.mapWidth/2;
+
         // Just choose 50 percent of each parent
-        for(int row = 0; row < childMap.mapWidth; row++){
-            // increments by 2 each time so that only 50% of elements are changed
-            for(int col = 1; col < childMap.mapHeight; col = col + 2){
+        for(int row = 0; row < childMap.mapHeight; row++){
+
+            // Take the 0-splitPoint elements of the row for the child map
+            for(int firstCol = 0; firstCol < splitPoint; firstCol++){
                 // Set this terrain in the map to be map2's
-                childMap.setTerrain(row,col, map2);
+                childMap.setTerrain(row, firstCol, map2);
+            }
+            // Take the splitPoint-mapWidth elements of the row for the child map
+            for(int secondCol = splitPoint; secondCol < map1.mapWidth; secondCol++){
+                // Set this terrain in the map to be map2's
+                childMap.setTerrain(row, secondCol, map2);
             }
         }
 

@@ -29,5 +29,10 @@ public class IndustrialTile implements BuildingTile
         return BuildingType.INDUSTRIAL;
     }
 
+    @Override
+    public String getShortName() {
+        return "I";
+    }
+
 
 }

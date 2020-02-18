@@ -23,9 +23,21 @@ public class AlgorithmManager {
     }
 
     public void run() {
-        if (options.isUsingHillClimb());
+        if (options.isUsingHillClimb()){
             // do something with hill climb
-        else; // do something with GA
+        }
+        else{
+            // Genetic Algorithm (These inputs can be tweaked)
+            int numGenerations = 1;
+            int generationSize = 5;
+            int numChildren = 1; // Generate 30 new children
+            int numParents = 2;  // Keep 10 parents
+            int numNew = 4; // Add 10 new random maps to the simualtion (Remainder after parents and children)
+            UrbanMap bestMap = this.geneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew);
+
+            System.out.println(bestMap);
+        }
+
     }
 
     public Metrics getMetrics() {
