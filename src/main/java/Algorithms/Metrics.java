@@ -1,24 +1,24 @@
 package Algorithms;
 
-import Map.UrbanMap;
+import java.util.ArrayList;
 
 public class Metrics {
-    private int maxScore;
+    private int score;
     private int timeAchieved;
-    private UrbanMap map;
+    private ArrayList<ArrayList<String>> map;
 
-    public Metrics(int maxScore, int timeAchieved, UrbanMap map) {
-        this.maxScore = maxScore;
+    public Metrics(int score, int timeAchieved, ArrayList<ArrayList<String>> map) {
+        this.score = score;
         this.timeAchieved = timeAchieved;
         this.map = map;
     }
 
-    public UrbanMap getMap() {
+    public ArrayList<ArrayList<String>> getMap() {
         return map;
     }
 
-    public int getMaxScore() {
-        return maxScore;
+    public int getScore() {
+        return score;
     }
 
     public int getTimeAchieved() {
