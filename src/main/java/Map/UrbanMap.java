@@ -144,12 +144,14 @@ public class UrbanMap
                 if (i >= 0 && i < terrain.size() && j >= 0 && j < terrain.get(0).size()) { //make sure i and j are valid indices
                     int manhattan = Math.abs(row - i) + Math.abs(col - j); //compute manhattan distance
                     if (type.equals("RESIDENTIAL")||type.equals("INDUSTRIAL")||type.equals("COMMERCIAL")) { //if checking for buildings terrain doesn't matter
-                        if (manhattan <= n && terrain.get(i).get(j).building.getType() == bType);
-                        count++; //if within distance and correct tile, increment
+                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).building.getType() == bType) {
+                            count++; //if within distance and correct tile, increment
+                        }
                     }
                     else { //otherwise need to check terrain and building
-                        if (manhattan <= n && terrain.get(i).get(j).getType() == tType && terrain.get(i).get(j).building.getType() == bType);
-                        count++;
+                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).getType() == tType && terrain.get(i).get(j).building.getType() == bType) {
+                            count++;
+                        }
                     }
                 }
             }
