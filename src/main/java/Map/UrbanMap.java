@@ -43,7 +43,8 @@ public class UrbanMap implements Comparable<UrbanMap>
 
     // Constructor for new maps created from origional map
     public UrbanMap(UrbanMap originalMap) {
-        this.terrain = originalMap.terrain;
+        this.terrain = new ArrayList<ArrayList<Terrain>>();
+        this.terrain.addAll(originalMap.terrain);
         this.mapWidth = originalMap.mapWidth;
         this.mapHeight = originalMap.mapHeight;
         this.maxResidential = originalMap.maxResidential;
@@ -117,12 +118,33 @@ public class UrbanMap implements Comparable<UrbanMap>
         return terrain.get(0).size();
     }
 
+        /*
+    * getValueOfMap()
+    * Returns the value of the map with the current urban layout.
+    */
+    public int getValueOfMap(){
+        int mapValue = 0;
+
+        //Iterate through every Terrain eleemnt of 2D array and check its value
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+
+                // Get the value of the current terrain and tile. Add to mapValue.
+                mapValue += this.terrain.get(row).get(col).getValue(this, row, col);
+            }
+        }
+        //System.out.println(mapValue);
+        return mapValue;
+    }
+
     /*
-    * setBuildingsOnMap()
+    * randomBuildingsMap()
     * Places buildings on map randomly.
     * There are a max number of industrial/residential/commercial zones in each input file.
     */
-    public UrbanMap randomBuildingsMap(){
+    public static UrbanMap randomBuildingsMap(UrbanMap initMap){
+
+        UrbanMap randomBuildingMap = new UrbanMap(initMap);
 
         // Randomly set the number of each building to place
         Random r = new Random();
@@ -131,9 +153,9 @@ public class UrbanMap implements Comparable<UrbanMap>
         int numCommercial = 1;//r.nextInt(this.maxCommercial+1);
 
         // Initialize all terrain to have NoBuildingTile
-        for(int row = 0; row < this.terrain.size(); row++){
-            for(int col = 0; col < this.terrain.get(row).size(); col++){
-                terrain.get(row).get(col).setBuilding(new NoBuildingTile());
+        for(int row = 0; row < randomBuildingMap.mapHeight; row++){
+            for(int col = 0; col < randomBuildingMap.mapWidth; col++){
+                randomBuildingMap.terrain.get(row).get(col).setBuilding(new NoBuildingTile());
             }
         }
 
@@ -142,27 +164,30 @@ public class UrbanMap implements Comparable<UrbanMap>
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
             if(numCommercial > 0){
-                setBuildingRandomly(new CommercialTile(), this.mapWidth, this.mapHeight, r);
+                setBuildingRandomly(randomBuildingMap, new CommercialTile(), r);
                 numCommercial--;
             }
             if(numIndustrial > 0){
-                setBuildingRandomly(new IndustrialTile(), this.mapWidth, this.mapHeight, r);
+                setBuildingRandomly(randomBuildingMap, new IndustrialTile(), r);
                 numIndustrial--;
             }
             if(numResidential > 0){
-                setBuildingRandomly(new ResidentialTile(), this.mapWidth, this.mapHeight, r);
+                setBuildingRandomly(randomBuildingMap, new ResidentialTile(), r);
                 numResidential--;
             }
         }
-        // This is the modified map - it will be reset the next time randomBuildingsMap() is run.
-        return this;     
+
+        return randomBuildingMap;
     }
 
     /*
     * setBuildingRandomly()
     * Sets this building type in a random location on the map.
     */
-    private void setBuildingRandomly(BuildingTile building, int mapWidth, int mapHeight, Random r){
+    private static void setBuildingRandomly(UrbanMap randomBuildingMap, BuildingTile building, Random r){
+
+        int mapHeight = randomBuildingMap.mapHeight;
+        int mapWidth = randomBuildingMap.mapWidth;
         int randRow;
         int randCol;
 
@@ -173,39 +198,17 @@ public class UrbanMap implements Comparable<UrbanMap>
             randRow = r.nextInt(mapHeight);
             randCol = r.nextInt(mapWidth);
 
-            if(this.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
-                    this.terrain.get(randRow).get(randCol).building.getType() != BuildingType.EMPTY) {
+            if(randomBuildingMap.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
+                    randomBuildingMap.terrain.get(randRow).get(randCol).building.getType() != BuildingType.EMPTY) {
                 // Not a valid spot.
                 numTries++;
             }
             else {
                 // Valid Spot. Set building and exit while loop.
-                this.terrain.get(randRow).get(randCol).setBuilding(new IndustrialTile());
+                randomBuildingMap.terrain.get(randRow).get(randCol).setBuilding(building);
                 numTries = 6;
             }
         }
-    }
-    
-    /*
-    * getValueOfMap()
-    * Returns the value of the map with the current urban layout.
-    */
-    public int getValueOfMap(){
-        int mapValue = 0;
-
-        //Iterate through every Terrain eleemnt of 2D array and check its value
-        for(int row = 0; row < this.terrain.size(); row++){
-            for(int col = 0; col < this.terrain.get(row).size(); col++){
-
-                // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.terrain.get(row).get(col).getValue(this, row, col);
-
-            }
-        }
-
-        //System.out.println(mapValue);
-        
-        return mapValue;
     }
 
     /*
@@ -265,6 +268,8 @@ public class UrbanMap implements Comparable<UrbanMap>
         result += "\n\n";
         result += ("Value: " + this.getValueOfMap());
         result += "\n";
+
+        // result += (this.getValueOfMap());
         return result;
     }
 
@@ -280,7 +285,7 @@ public class UrbanMap implements Comparable<UrbanMap>
     // Allows for a map to be compared to another.
     @Override
     public int compareTo(UrbanMap compareMap) {
-        return (this.getValueOfMap() < compareMap.getValueOfMap()) ? -1 : 1;
+        return (this.getValueOfMap() < compareMap.getValueOfMap()) ? 1 : -1;
     }
 
 	public void ensureSatisfiesBuildingCount(BuildingType buildingType, int maxBuildings){

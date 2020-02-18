@@ -35,6 +35,7 @@ public class AlgorithmManager {
             int numNew = 10; // Add 10 new random maps to the simualtion (Remainder after parents and children)
             UrbanMap bestMap = this.geneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew);
 
+            System.out.println("FINAL:");
             System.out.println(bestMap);
         }
 

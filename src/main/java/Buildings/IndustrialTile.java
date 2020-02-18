@@ -20,9 +20,6 @@ public class IndustrialTile implements BuildingTile
         // For every building built, there is a difficulty of 2 as well as a difficulty for that square.
         buildingValue -= (2 + difficulty);
 
-        System.out.println(map.getNeighbors("INDUSTRIAL", 2, row, col));
-        System.out.println(map.getNeighbors("TOXIC", 2, row, col));
-
         return buildingValue;
     }
 
@@ -36,6 +33,4 @@ public class IndustrialTile implements BuildingTile
     public String getShortName() {
         return "I";
     }
-
-
 }

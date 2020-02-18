@@ -2,6 +2,7 @@ package Map;
 
 import Buildings.BuildingTile;
 import Buildings.BuildingType;
+import Buildings.NoBuildingTile;
 
 enum TerrainType {
     TOXIC, SCENIC, STANDARD;
