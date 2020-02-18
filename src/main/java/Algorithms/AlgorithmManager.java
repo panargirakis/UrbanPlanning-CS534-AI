@@ -29,7 +29,7 @@ public class AlgorithmManager {
     }
 
     public Metrics getMetrics() {
-        return new Metrics(); // return the actual metrics from the correct algorithm
+        return new Metrics(0, 0, map); // TODO: return the actual metrics from the correct algorithm
     }
 
 }
