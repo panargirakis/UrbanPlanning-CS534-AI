@@ -1,5 +1,6 @@
 package Map;
 
+import Buildings.BuildingTile;
 import com.opencsv.CSVReader;
 
 
@@ -26,7 +27,7 @@ public class UrbanMap
     int maxResidential;
 
     // Terrain 2D Array (changed to nested arraylist, easier to populate)
-    private ArrayList<ArrayList<Terrain>> terrain;
+    public ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
     public UrbanMap(String mapFileToParse){
@@ -87,15 +88,26 @@ public class UrbanMap
     /*
     * returns number of rows in map
      */
-    int getRows() {
+    public int getRows() {
         return terrain.size();
     }
 
     /*
     * returns number of columns in map
      */
-    int getCols() {
+    public int getCols() {
         return terrain.get(0).size();
+    }
+
+    /*
+    * returns terrain at given position
+     */
+    public Terrain getTerrain(int row, int col) {
+        return terrain.get(row).get(col);
+    }
+
+    public void changeBuilding(int row, int col, BuildingTile newBuilding) {
+        terrain.get(row).get(col).setBuilding(newBuilding);
     }
 
     /*

@@ -69,4 +69,5 @@ public class Terrain
 	    return this.building.getType();
     }
 
+    public BuildingTile getBuildingTile() { return this.building; }
 }

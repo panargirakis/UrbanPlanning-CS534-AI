@@ -1,6 +1,11 @@
 package Algorithms;
 
+import Buildings.BuildingType;
+import Buildings.BuildingTile;
+import Buildings.NoBuildingTile;
+import Map.TerrainType;
 import Map.UrbanMap;
+import java.util.Random;
 
 public class HillClimb {
 
@@ -13,7 +18,7 @@ public class HillClimb {
         this.startMap = map;
         this.bestMap = map;
         this.bestValue = 0;
-        this.temperature = 100; //SUBJECT TO CHANGE
+        this.temperature = 5; //SUBJECT TO CHANGE
     }
 
     /**
@@ -52,6 +57,31 @@ public class HillClimb {
      */
     private UrbanMap generateMove(UrbanMap map) {
         //generate a new map that makes random move and return it
+        Random rand = new Random();
+
+        int row = map.getRows();
+        int col = map.getCols();
+        int startRow = 0;
+        int startCol = 0;
+        int endRow = 0;
+        int endCol = 0;
+        boolean valid = false;
+        //find position that has a building
+        while(!valid) {
+            startRow = rand.nextInt(row);
+            startCol = rand.nextInt(col);
+            if (map.getTerrain(startRow, startCol).getBuildingType() != BuildingType.EMPTY) valid = true;
+        }
+        //find position with no building (not toxic) to move building to
+        valid = false;
+        while(!valid) {
+            endRow = rand.nextInt(row);
+            endCol = rand.nextInt(col);
+            if (map.getTerrain(endRow, endCol).getBuildingType() == BuildingType.EMPTY && map.getTerrain(endRow, endCol).getType() != TerrainType.TOXIC) valid = true;
+        }
+        BuildingTile b = map.getTerrain(startRow, startCol).getBuildingTile(); //get building tile of the building we're moving
+        map.changeBuilding(startRow, startCol, new NoBuildingTile()); //set the location of the building we're moving to empty
+        map.changeBuilding(endRow, endCol, b); //move the building
         return map;
     }
 
