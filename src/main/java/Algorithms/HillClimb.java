@@ -4,8 +4,10 @@ import Buildings.BuildingType;
 import Buildings.BuildingTile;
 import Buildings.NoBuildingTile;
 import Map.TerrainType;
+import Map.Terrain;
 import Map.UrbanMap;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class HillClimb {
 
@@ -13,76 +15,72 @@ public class HillClimb {
     UrbanMap bestMap;
     int bestValue;
     int temperature;
+    double decreaseRatio;
+    int maxRestart;
+    int maxWorseMoves;
 
-    public HillClimb(UrbanMap map) {
-        this.startMap = map;
-        this.bestMap = map;
-        this.bestValue = 0;
-        this.temperature = 5; //SUBJECT TO CHANGE
+    /*
+    * Constructor
+     */
+    public HillClimb(UrbanMap map, int temp, double decrease, int restart, int worse) {
+        this.startMap = new UrbanMap(map);
+        this.bestMap = new UrbanMap(map);
+        this.bestValue = bestMap.getValueOfMap();
+        this.temperature = temp;
+        this.decreaseRatio = decrease;
+        this.maxRestart = restart;
+        this.maxWorseMoves = worse;
     }
 
-    /**
-     * Run the hill climbing algorithm
-     * STILL NEED TO IMPLEMENT RANDOM RESTARTS
-     */
-    public UrbanMap run() {
-        UrbanMap currentMap = this.startMap;
-        currentMap.setBuildingsOnMapRandomly(0, 0,0); //fill in paramaters
-        long startTime = System.currentTimeMillis(); //one way of limiting run time, can change to different method
-        while(System.currentTimeMillis() - startTime < 10000) {
-            UrbanMap temp = generateMove(currentMap); //generate a possible move
-            if (probability(temp.getValueOfMap())) currentMap = temp; //make the move according to prob. function
-            if (currentMap.getValueOfMap() > this.bestValue) { //save the map if it has best values so far
-                this.bestValue = currentMap.getValueOfMap();
-                this.bestMap = currentMap;
+    public UrbanMap runHillClimb() {
+        UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
+        long startTime = System.currentTimeMillis();
+        int count; //counts number of consecutive sideways/worse moves
+        while(System.currentTimeMillis() - startTime < 3) {
+            UrbanMap move = generateMove(currentMap);
+            if (probability(move.getValueOfMap(), currentMap.getValueOfMap())) {
+                currentMap = move;
             }
+            if (currentMap.getValueOfMap() > bestValue) {
+                bestMap = currentMap;
+                bestValue = currentMap.getValueOfMap();
+            }
+            System.out.println(bestMap);
         }
-        return this.bestMap; //when 10 seconds have elapsed, return the highest valued map
+        return bestMap;
     }
 
-    /**
-     * Probability function for simulated annealing
-     * Returns true if the algorithm should make the move given map value
-     */
-    private boolean probability(int value) {
-        //fill in probability function here
-        //calculate whether algorithm should make the move
-        //lower the temperature
-        return true;
+    private boolean probability(int newValue, int currentValue) {
+        if (newValue > currentValue) return true; //take the move if it's better
+        return false;
     }
 
-    /**
-     * Given the current working map, generate a new possible map by moving one building
-     * Can also give functionality to add/remove existing buildings
+    /*
+    * given a map generates a next possible move
+    * currently only moves buildings, does not add or remove
      */
     private UrbanMap generateMove(UrbanMap map) {
-        //generate a new map that makes random move and return it
+        UrbanMap newMove = new UrbanMap(map);
         Random rand = new Random();
-
-        int row = map.getRows();
-        int col = map.getCols();
-        int startRow = 0;
-        int startCol = 0;
-        int endRow = 0;
-        int endCol = 0;
+        int startRow = 0; int startCol = 0; int endRow = 0; int endCol = 0;
         boolean valid = false;
-        //find position that has a building
-        while(!valid) {
-            startRow = rand.nextInt(row);
-            startCol = rand.nextInt(col);
-            if (map.getTerrain(startRow, startCol).getBuildingType() != BuildingType.EMPTY) valid = true;
+        //find a position with a building
+        while (!valid) {
+            startRow = rand.nextInt(map.getRows());
+            startCol = rand.nextInt(map.getCols());
+            if (map.getTerrainAt(startRow, startCol).getBuildingType() != BuildingType.EMPTY) valid = true;
         }
-        //find position with no building (not toxic) to move building to
+        //find a position to move building to
         valid = false;
-        while(!valid) {
-            endRow = rand.nextInt(row);
-            endCol = rand.nextInt(col);
-            if (map.getTerrain(endRow, endCol).getBuildingType() == BuildingType.EMPTY && map.getTerrain(endRow, endCol).getType() != TerrainType.TOXIC) valid = true;
+        while (!valid) {
+            endRow = rand.nextInt(map.getRows());
+            endCol = rand.nextInt(map.getCols());
+            if (map.getTerrainAt(endRow, endCol).getBuildingType() == BuildingType.EMPTY) valid = true;
         }
-        BuildingTile b = map.getTerrain(startRow, startCol).getBuildingTile(); //get building tile of the building we're moving
-        map.changeBuilding(startRow, startCol, new NoBuildingTile()); //set the location of the building we're moving to empty
-        map.changeBuilding(endRow, endCol, b); //move the building
-        return map;
+        BuildingTile b = map.getTerrainAt(startRow, startCol).getBuildingTile();
+        newMove.setBuildingAt(new NoBuildingTile(), startRow, startCol); //removes building froms start location
+        newMove.setBuildingAt(b, endRow, endCol); //puts a building on end location
+        return newMove;
     }
 
 }

@@ -15,7 +15,11 @@ public class AlgorithmManager {
         this.map = map;
 
         this.geneticAlgorithm = new GeneticAlgorithm();
-        this.hillClimb = new HillClimb(map); //send through an unpopulated map
+        int temperature = 5;
+        double decreaseRatio = 0.01;
+        int maxRestart = 5;
+        int maxWorseMoves = 100;
+        this.hillClimb = new HillClimb(map, temperature, decreaseRatio, maxRestart, maxWorseMoves); //send through an unpopulated map
     }
 
     public void setOptions(Options options) {
@@ -24,7 +28,8 @@ public class AlgorithmManager {
 
     public void run() {
         if (options.isUsingHillClimb()){
-            // do something with hill climb
+            // Hill Climb
+            hillClimb.runHillClimb();
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
