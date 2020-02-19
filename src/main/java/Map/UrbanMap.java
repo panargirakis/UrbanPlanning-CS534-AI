@@ -134,14 +134,14 @@ public class UrbanMap implements Comparable<UrbanMap> {
     /*
     * returns number of rows in map
      */
-    int getRows() {
+    public int getRows() {
         return terrain.size();
     }
 
     /*
     * returns number of columns in map
      */
-    int getCols() {
+    public int getCols() {
         return terrain.get(0).size();
     }
 

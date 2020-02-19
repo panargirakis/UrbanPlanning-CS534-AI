@@ -1,4 +1,5 @@
 import Algorithms.AlgorithmManager;
+import Algorithms.HillClimb;
 import Algorithms.Metrics;
 import IO.Options;
 import Map.UrbanMap;
