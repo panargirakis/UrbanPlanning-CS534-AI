@@ -15,11 +15,11 @@ public class GeneticAlgorithm {
     /*
      * runGeneticAlgorithm() Runs the genetic algorithm on the given terrain map.
      */
-    public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int generationSize, int numChildren, int numParents, int numNew) {
+    static public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int generationSize, int numChildren, int numParents, int numNew) {
 
         // 1: Create the initial population of x maps with random buildings
-        List<UrbanMap> initialPopulation = this.generateRandomPopulation(initMap, generationSize);
-        System.out.println(initialPopulation);
+        List<UrbanMap> initialPopulation = GeneticAlgorithm.generateRandomPopulation(initMap, generationSize);
+        //System.out.println(initialPopulation);
 
         /* RUN GENERATIONS */
         List<UrbanMap> finalGeneration = runGenerations(initMap, initialPopulation, numGenerations, numChildren, numParents, numNew);
@@ -29,10 +29,11 @@ public class GeneticAlgorithm {
         return finalGeneration.get(0);
     }
 
-    private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> initialPopulation, int numGenerations, int numChildren, int numParents, int numNew) {
+    static private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> initialPopulation, int numGenerations, int numChildren, int numParents, int numNew) {
 
         List<UrbanMap> currentGeneration = new ArrayList<UrbanMap>();
         currentGeneration.addAll(initialPopulation);
+        Collections.copy(currentGeneration, initialPopulation);
 
         for(int generation = 0; generation < numGenerations; generation++){
 
@@ -45,8 +46,7 @@ public class GeneticAlgorithm {
 
             // Add the new population to the next generation
             currentGeneration.clear();
-            currentGeneration.addAll(parentPopulation);
-            
+            currentGeneration.addAll(parentPopulation);            
             currentGeneration.addAll(childPopulation);
             currentGeneration.addAll(newRandomMaps);
 
@@ -54,10 +54,12 @@ public class GeneticAlgorithm {
             // System.out.println(parentPopulation);
             // System.out.println(childPopulation);
             // System.out.println(newRandomMaps);
-            // System.out.println(currentGeneration + "\n");
+            Collections.copy(currentGeneration, currentGeneration);
+            //System.out.println(currentGeneration + "\n");
         }// 5: Repeat (numGenerations) times
 
         // After the loop, current next generation will be the final generation.
+        //System.out.println(currentGeneration);
         return currentGeneration;
     }
 
@@ -65,13 +67,14 @@ public class GeneticAlgorithm {
      * generateRandomPopulation() generates a list of maps with random buildings of
      * the given size.
      */
-    private List<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize) {
+    static private List<UrbanMap> generateRandomPopulation(UrbanMap initMap, int populationSize) {
 
         List<UrbanMap> randomPopulation = new ArrayList<UrbanMap>();
 
         for (int i = 0; i < populationSize; i++) {
             // Add randomly generated maps to the list of maps
             randomPopulation.add(UrbanMap.randomBuildingsMap(initMap));
+            //System.out.println(randomPopulation.get(i));
         }
         return randomPopulation;
     }
@@ -80,7 +83,7 @@ public class GeneticAlgorithm {
      * chooseBestPopulations() chooses a list of the best map layouts based on the
      * percentage of maps to choose
      */
-    private List<UrbanMap> chooseBestPopulations(List<UrbanMap> currentGeneration, int numToKeep) {
+    static private List<UrbanMap> chooseBestPopulations(List<UrbanMap> currentGeneration, int numToKeep) {
         // Sort the population
         // System.out.println("=== - " + currentGeneration);
         Collections.sort(currentGeneration);
@@ -94,7 +97,7 @@ public class GeneticAlgorithm {
      * mateMaps() Mate the maps in the population of maps to create a new generation
      * of maps.
      */
-    private List<UrbanMap> mateParents(List<UrbanMap> parentPopulation, int numberOfChildren) {
+    static private List<UrbanMap> mateParents(List<UrbanMap> parentPopulation, int numberOfChildren) {
 
         // List of children
         List<UrbanMap> childPopulation = new ArrayList<UrbanMap>();
@@ -110,7 +113,7 @@ public class GeneticAlgorithm {
     /*
      * mateMaps() Mate the 2 given maps
      */
-    private UrbanMap mateMaps(UrbanMap map1, UrbanMap map2) {
+    static private UrbanMap mateMaps(UrbanMap map1, UrbanMap map2) {
 
         UrbanMap childMap = new UrbanMap(map1);
 
@@ -127,7 +130,7 @@ public class GeneticAlgorithm {
             // Take the splitPoint-mapWidth elements of the row for the child map
             for(int secondCol = splitPoint; secondCol < map1.mapWidth; secondCol++){
                 // Set this terrain in the map to be map2's
-                childMap.setTerrain(row, secondCol, map2);
+                childMap.replaceBuildingFromMap(row, secondCol, map2);
             }
         }
 

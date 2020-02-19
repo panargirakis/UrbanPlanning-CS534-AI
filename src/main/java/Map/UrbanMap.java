@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Collections;
 
 import com.opencsv.CSVReader;
 
@@ -17,8 +18,7 @@ import Buildings.IndustrialTile;
 import Buildings.NoBuildingTile;
 import Buildings.ResidentialTile;
 
-public class UrbanMap implements Comparable<UrbanMap>
-{
+public class UrbanMap implements Comparable<UrbanMap> {
     // max allowed industrial
     public int maxIndustrial;
 
@@ -36,20 +36,60 @@ public class UrbanMap implements Comparable<UrbanMap>
     private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
-    public UrbanMap(String mapFileToParse){
-        // Right now takes a string with all the terrain. May want to update to be a different input type?
+    public UrbanMap(String mapFileToParse) {
+        // Right now takes a string with all the terrain. May want to update to be a
+        // different input type?
         this.generateMapTerrain(mapFileToParse);
+        // Initialize all terrain to have NoBuildingTile
+        for (int row = 0; row < this.mapHeight; row++) {
+            for (int col = 0; col < this.mapWidth; col++) {
+                this.setBuildingAt(new NoBuildingTile(), row, col);
+            }
+        }
     }
 
     // Constructor for new maps created from origional map
     public UrbanMap(UrbanMap originalMap) {
-        this.terrain = new ArrayList<ArrayList<Terrain>>();
-        this.terrain.addAll(originalMap.terrain);
+
         this.mapWidth = originalMap.mapWidth;
         this.mapHeight = originalMap.mapHeight;
+
+        this.cloneTerrain(originalMap);
+        // this.terrain.addAll(originalMap.terrain);
+        // Collections.copy(this.terrain, originalMap.terrain);
+        
         this.maxResidential = originalMap.maxResidential;
         this.maxCommercial = originalMap.maxCommercial;
         this.maxIndustrial = originalMap.maxIndustrial;
+    }
+
+    private void cloneTerrain(UrbanMap originalMap){
+
+        ArrayList<ArrayList<Terrain>> terrainToClone = (ArrayList<ArrayList<Terrain>>) originalMap.terrain.clone();
+
+        this.terrain = new ArrayList<ArrayList<Terrain>>();
+
+        for(int row = 0; row < this.mapHeight; row++){
+
+            ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
+
+            for(int col = 0; col < this.mapWidth; col++){
+
+                lineOfTerrain.add(null);
+
+            }
+            this.terrain.add(lineOfTerrain);
+
+        }
+
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+
+                this.terrain.get(row).set(col, new Terrain(terrainToClone.get(row).get(col)));
+
+            }
+        }
+
     }
 
 	/*
@@ -125,12 +165,12 @@ public class UrbanMap implements Comparable<UrbanMap>
     public int getValueOfMap(){
         int mapValue = 0;
 
-        //Iterate through every Terrain eleemnt of 2D array and check its value
+        //Iterate through every Terrain element of 2D array and check its value
         for(int row = 0; row < this.mapHeight; row++){
             for(int col = 0; col < this.mapWidth; col++){
 
                 // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.terrain.get(row).get(col).getValue(this, row, col);
+                mapValue += this.getTerrainAt(row, col).getValue(this, row, col);
             }
         }
         //System.out.println(mapValue);
@@ -155,12 +195,13 @@ public class UrbanMap implements Comparable<UrbanMap>
         // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < randomBuildingMap.mapHeight; row++){
             for(int col = 0; col < randomBuildingMap.mapWidth; col++){
-                randomBuildingMap.terrain.get(row).get(col).setBuilding(new NoBuildingTile());
+                randomBuildingMap.setBuildingAt(new NoBuildingTile(), row, col);
             }
         }
 
         // For the buildings, go through and add a building.
         int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
+        maxBuildings = 1;
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
             if(numCommercial > 0){
@@ -198,17 +239,25 @@ public class UrbanMap implements Comparable<UrbanMap>
             randRow = r.nextInt(mapHeight);
             randCol = r.nextInt(mapWidth);
 
-            if(randomBuildingMap.terrain.get(randRow).get(randCol).getType() == TerrainType.TOXIC ||
-                    randomBuildingMap.terrain.get(randRow).get(randCol).building.getType() != BuildingType.EMPTY) {
+            if(randomBuildingMap.getTerrainAt(randRow, randCol).getType() == TerrainType.TOXIC ||
+                    randomBuildingMap.getTerrainAt(randRow, randCol).building.getType() != BuildingType.EMPTY) {
                 // Not a valid spot.
                 numTries++;
             }
             else {
                 // Valid Spot. Set building and exit while loop.
-                randomBuildingMap.terrain.get(randRow).get(randCol).setBuilding(building);
+                randomBuildingMap.setBuildingAt(building, randRow, randCol);
                 numTries = 6;
             }
         }
+    }
+
+    public Terrain getTerrainAt(int row, int col){
+        return this.terrain.get(row).get(col);
+    }
+
+    public void setBuildingAt(BuildingTile building, int row, int col){
+        this.terrain.get(row).get(col).setBuilding(building);
     }
 
     /*
@@ -248,9 +297,9 @@ public class UrbanMap implements Comparable<UrbanMap>
         return count;
     }
 
-    // Set the terrain at the row,col coordinates to the terrain of the given mapo
-    public void setTerrain(int row, int col, UrbanMap replacementMap) {
-        this.terrain.get(row).get(col).building = terrain.get(row).get(col).building;
+    // Set the building at the row,col coordinates to the building of the given map
+    public void replaceBuildingFromMap(int row, int col, UrbanMap replacementMap) {
+        this.setBuildingAt(replacementMap.getTerrainAt(row,col).building, row, col);
     }
 
     // Overides the toString() method. Prints the buildings and value of the map.
@@ -260,7 +309,7 @@ public class UrbanMap implements Comparable<UrbanMap>
 
         for(int row = 0; row < this.mapHeight; row++){
             for(int col = 0; col < this.mapWidth; col++){
-                result += this.terrain.get(row).get(col).building.getShortName();
+                result += this.getTerrainAt(row, col).building.getShortName();
             }
             result += "\n";
         }
@@ -285,7 +334,16 @@ public class UrbanMap implements Comparable<UrbanMap>
     // Allows for a map to be compared to another.
     @Override
     public int compareTo(UrbanMap compareMap) {
-        return (this.getValueOfMap() < compareMap.getValueOfMap()) ? 1 : -1;
+
+        if(this.getValueOfMap() > compareMap.getValueOfMap()){
+            return -1;
+        }
+        else if(this.getValueOfMap() < compareMap.getValueOfMap()){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 
 	public void ensureSatisfiesBuildingCount(BuildingType buildingType, int maxBuildings){
@@ -295,7 +353,7 @@ public class UrbanMap implements Comparable<UrbanMap>
         int numBuildings = 0;
         for(int row = 0; row < this.mapHeight; row++){
             for(int col = 0; col < this.mapWidth; col++){
-                if(this.terrain.get(row).get(col).building.getType() == buildingType){
+                if(this.getTerrainAt(row, col).building.getType() == buildingType){
                     numBuildings++;
                 }
             }
@@ -320,8 +378,8 @@ public class UrbanMap implements Comparable<UrbanMap>
                     row = r.nextInt(this.mapHeight);
                     col = r.nextInt(this.mapWidth);
 
-                    if(this.terrain.get(row).get(col).building.getType() == buildingType) {
-                        this.terrain.get(row).get(col).setBuilding(new NoBuildingTile());
+                    if(this.getTerrainAt(row, col).building.getType() == buildingType) {
+                        this.getTerrainAt(row, col).setBuilding(new NoBuildingTile());
                         // We've deleted a building, now we can leave the loop and deceremented the number of this building types on the map.
                         deletedBuilding = true;
                         numBuildings--;
