@@ -1,19 +1,20 @@
 package IO;
 
+import Algorithms.Metrics;
+import Map.Terrain;
 import Map.UrbanMap;
 
 import com.opencsv.CSVWriter;
-
-import Algorithms.Metrics;
 
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class WriteResults {
 
-    public static void writeResults(UrbanMap map, /*Metrics metrics,*/ String fileName) throws IOException {
+    public static void writeResults(UrbanMap map, Metrics metrics, String fileName) throws IOException {
         try (
                 Writer writer = Files.newBufferedWriter(Paths.get(fileName));
 
