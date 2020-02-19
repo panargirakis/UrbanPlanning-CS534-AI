@@ -34,8 +34,15 @@ public class GeneticAlgorithm {
         List<UrbanMap> currentGeneration = new ArrayList<UrbanMap>();
         currentGeneration.addAll(initialPopulation);
         Collections.copy(currentGeneration, initialPopulation);
+        // Track the time until the algorithm has reached 10 seconds.
+        long startTime = System.currentTimeMillis();
 
         for(int generation = 0; generation < numGenerations; generation++){
+
+            // If it takes more than 10 seconds, quit.
+            if(System.currentTimeMillis() - startTime >= 10000){
+                break;
+            }
 
             // 2: Choose the best (numParents) of this generation to serve as parents.
             List<UrbanMap> parentPopulation = chooseBestPopulations(currentGeneration, numParents);
