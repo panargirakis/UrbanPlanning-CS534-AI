@@ -33,12 +33,13 @@ public class AlgorithmManager {
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
-            int numGenerations = 200;
-            int generationSize = 100;
-            int numChildren = 30;
-            int numParents = 70; 
-            int numNew = 40; // Add new random maps to the simulation (Remainder after parents and children)
-            UrbanMap bestMap = GeneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew);
+            int numGenerations = 500;
+            int generationSize = 500;
+            int numChildren = 200;
+            int numParents = 200; 
+            int numNew = 100; // Add new random maps to the simulation (Remainder after parents and children)
+            int mutationChance = 5; // there is a 1/mutationChance chance that the child will have some mutation.
+            UrbanMap bestMap = GeneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew, mutationChance);
 
             System.out.println("FINAL MAP:\n");
             System.out.println(bestMap);
@@ -46,8 +47,8 @@ public class AlgorithmManager {
 
     }
 
-    public Metrics getMetrics() {
-        return new Metrics(0, 0, map); // TODO: return the actual metrics from the correct algorithm
-    }
+    // public Metrics getMetrics() {
+    //     return new Metrics(0, 0, map); // TODO: return the actual metrics from the correct algorithm
+    // }
 
 }

@@ -14,7 +14,7 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    TerrainType type;
+    public TerrainType type;
     BuildingTile building;
     int difficulty;
 
@@ -39,9 +39,9 @@ public class Terrain
     }
 
     public Terrain(Terrain terrainToDuplicate){
-        this.type = terrainToDuplicate.getType();
+        this.type = terrainToDuplicate.type;
         this.difficulty = terrainToDuplicate.difficulty;
-        this.building = new NoBuildingTile();
+        this.building = terrainToDuplicate.building;
     }
 
     /*
@@ -57,9 +57,7 @@ public class Terrain
     * Returns the value of this specific terrain tile based on buildings on it and neighboring tiles.
     */
 	public int getValue(UrbanMap map, int row, int col) {
-
         return this.building.getValueOfBuilding(map, row, col, this.difficulty);
-
     }
 
     /*

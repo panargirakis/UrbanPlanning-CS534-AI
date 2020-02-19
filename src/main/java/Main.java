@@ -32,7 +32,7 @@ public class Main
         AlgorithmManager solver = new AlgorithmManager(options, map);
 
         solver.run();
-        Metrics result = solver.getMetrics();
+        //Metrics result = solver.getMetrics();
 
         // then print result back (use WriteResults class)
     }
