@@ -10,33 +10,29 @@ public class Main
     // https://docs.google.com/document/d/1rH2Cmk5KzQ7_EN9-3wJejrr8PcwbdFwpYUoCDd6_OPU/edit
     public static void main(String[] args){
 
-        UrbanMap map = new UrbanMap("C:\\Users\\Veronica\\IdeaProjects\\UrbanPlanning-CS534-AI\\src\\main\\resources\\urban1.txt");
-        HillClimb hc = new HillClimb(map, 10, 0.99, 5, 100);
-        hc.runHillClimb();
-
         // parameters are the file to read in, and the technique to use - HC (Hill Climbing) and GA (Genetic Algorithm)
-//        String inputFile = args[0];
-//        String algorithm = args[1];
-//
-//        boolean isUsingHC;
-//        if (algorithm.equals("HC")) {
-//            isUsingHC = true;
-//        }
-//        else if (algorithm.equals("GA")) {
-//            isUsingHC = false;
-//        }
-//        else {
-//            System.out.print("Invalid algorithm name. Usage: plan {filename} {GA or HC}");
-//            return;
-//        }
-//
-//        Options options = new Options(inputFile, isUsingHC);
-//
-//        UrbanMap map = new UrbanMap(options.getFileToRead());
-//
-//        AlgorithmManager solver = new AlgorithmManager(options, map);
-//
-//        solver.run();
+        String inputFile = args[0];
+        String algorithm = args[1];
+
+        boolean isUsingHC;
+        if (algorithm.equals("HC")) {
+            isUsingHC = true;
+        }
+        else if (algorithm.equals("GA")) {
+            isUsingHC = false;
+        }
+        else {
+            System.out.print("Invalid algorithm name. Usage: plan {filename} {GA or HC}");
+            return;
+        }
+
+        Options options = new Options(inputFile, isUsingHC);
+
+        UrbanMap map = new UrbanMap(options.getFileToRead());
+
+        AlgorithmManager solver = new AlgorithmManager(options, map);
+
+        solver.run();
         //Metrics result = solver.getMetrics();
 
         // then print result back (use WriteResults class)
