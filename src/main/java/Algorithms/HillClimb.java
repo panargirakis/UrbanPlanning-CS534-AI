@@ -14,7 +14,7 @@ public class HillClimb {
     double temperature;
     double decreaseRatio;
     int maxRestart;
-    int maxWorseMoves;
+    int minWorseMoves;
 
     /*
     * Constructor
@@ -26,7 +26,7 @@ public class HillClimb {
         this.temperature = temp;
         this.decreaseRatio = decrease;
         this.maxRestart = restart;
-        this.maxWorseMoves = worse;
+        this.minWorseMoves = worse;
     }
 
     /*
@@ -36,12 +36,18 @@ public class HillClimb {
     public UrbanMap runHillClimb() {
         UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
         long startTime = System.currentTimeMillis();
-        int count; //counts number of consecutive sideways/worse moves
+        int count = 0; //counts number of consecutive sideways/worse moves
+        int restarts = 0; //counts the number of times algorithm has restarted
         while(System.currentTimeMillis() - startTime < 10000) {
-            UrbanMap move = generateMove(currentMap);
-            if (probability(move.getValueOfMap(), currentMap.getValueOfMap())) {
-                currentMap = move;
+            if (count > minWorseMoves && restarts < maxRestart) { //if we reach the minimum worse move count, do a restart if we are within limit
+                currentMap = UrbanMap.randomBuildingsMap(startMap);
+                count = 0;
+                restarts++;
             }
+            UrbanMap move = generateMove(currentMap);
+            if (move.getValueOfMap() < currentMap.getValueOfMap()) count++; //if the move we find is worse, increment worse move count
+            else count = 0; //otherwise reset count to zero
+            if (probability(move.getValueOfMap(), currentMap.getValueOfMap())) currentMap = move;
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
@@ -57,6 +63,7 @@ public class HillClimb {
     * returns true if algorithm should make the proposed new move
      */
     private boolean probability(int newValue, int currentValue) {
+        //System.out.println(newValue + " " + currentValue);
         if (newValue > currentValue) { //take the move if it is better
             temperature *= decreaseRatio; //if we make a move, decrease the temp
             return true;
@@ -76,6 +83,15 @@ public class HillClimb {
      */
     private UrbanMap generateMove(UrbanMap map) {
         UrbanMap newMove = new UrbanMap(map);
+        //first check if the map has any buildings
+        int buildings = 0;
+        for (int i = 0; i < map.getRows(); i++) {
+            for (int j = 0; j < map.getCols(); j++) {
+                if (map.getTerrainAt(i, j).getBuildingType() != BuildingType.EMPTY) buildings++;
+            }
+        }
+        //if the map has no buildings, just return the map or algorithm gets stuck in a loop
+        if (buildings == 0) return newMove;
         Random rand = new Random();
         int startRow = 0; int startCol = 0; int endRow = 0; int endCol = 0;
         boolean valid = false;

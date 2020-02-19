@@ -15,11 +15,11 @@ public class AlgorithmManager {
         this.map = map;
 
         this.geneticAlgorithm = new GeneticAlgorithm();
-        double temperature = 10;
-        double decreaseRatio = 0.99;
-        int maxRestart = 5;
-        int maxWorseMoves = 100;
-        this.hillClimb = new HillClimb(map, temperature, decreaseRatio, maxRestart, maxWorseMoves); //send through an unpopulated map
+        double temperature = 10; //starting temperature
+        double decreaseRatio = 0.99; //ratio to decrease temperature by
+        int maxRestart = 5; //maximum number of restarts
+        int minWorseMoves = 100000; //minimum number of worse moves to reach before restarting
+        this.hillClimb = new HillClimb(map, temperature, decreaseRatio, maxRestart, minWorseMoves); //send through an unpopulated map
     }
 
     public void setOptions(Options options) {
