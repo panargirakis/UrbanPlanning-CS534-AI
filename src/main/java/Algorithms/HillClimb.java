@@ -51,7 +51,7 @@ public class HillClimb {
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
-                System.out.println(bestMap);
+                //System.out.println(bestMap);
             }
         }
         System.out.println(bestMap);
