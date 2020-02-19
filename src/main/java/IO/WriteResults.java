@@ -1,7 +1,6 @@
 package IO;
 
 import Algorithms.Metrics;
-import Map.Terrain;
 import Map.UrbanMap;
 
 import com.opencsv.CSVWriter;
@@ -10,7 +9,6 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class WriteResults {
 
@@ -24,7 +22,7 @@ public class WriteResults {
                         CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                         CSVWriter.DEFAULT_LINE_END);
         ) {
-            String[] headerRecord = {"Max Score: ", Integer.toString(metrics.getMaxScore()),
+            String[] headerRecord = {"Max Score: ", Integer.toString(metrics.getScore()),
                                     "Time achieved:", Integer.toString(metrics.getTimeAchieved())};
             csvWriter.writeNext(headerRecord);
 
