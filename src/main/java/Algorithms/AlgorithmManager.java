@@ -33,7 +33,7 @@ public class AlgorithmManager {
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
-            int numGenerations = 500;
+            int numGenerations = 5000;  // This is likely to be superceded by the 10 second time limit.
             int generationSize = 500;
             int numChildren = 200;
             int numParents = 200; 
