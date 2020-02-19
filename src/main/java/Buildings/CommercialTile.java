@@ -30,4 +30,9 @@ public class CommercialTile implements BuildingTile
         return BuildingType.COMMERCIAL;
     }
 
+    @Override
+    public String getShortName() {
+        return "C";
+    }
+
 }

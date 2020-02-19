@@ -1,3 +1,9 @@
 .idea
 .gradle
 /build
+.class
+.project
+.vscode
+bin/
+.classpath
+.settings

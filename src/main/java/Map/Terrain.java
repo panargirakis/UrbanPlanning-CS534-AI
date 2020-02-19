@@ -14,7 +14,7 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    TerrainType type; // Enum?
+    TerrainType type;
     BuildingTile building;
     int difficulty;
 
@@ -26,13 +26,22 @@ public class Terrain
             this.building = new NoBuildingTile();
         }
         catch (NumberFormatException e) {
-            if (rawType.equals("X"))
+            if (rawType.equals("X")){
                 this.type = TerrainType.TOXIC;
-            else if (rawType.equals("S"))
+                this.difficulty = 9999;
+            }
+            else if (rawType.equals("S")){
                 this.type = TerrainType.SCENIC;
-            this.difficulty = 9999;
+                this.difficulty = 1;
+            }
             this.building = new NoBuildingTile();
         }
+    }
+
+    public Terrain(Terrain terrainToDuplicate){
+        this.type = terrainToDuplicate.getType();
+        this.difficulty = terrainToDuplicate.difficulty;
+        this.building = new NoBuildingTile();
     }
 
     /*

@@ -1,7 +1,6 @@
 package Buildings;
 
 import Map.UrbanMap;
-import Map.Terrain;
 import Buildings.BuildingTile;
 
 public class ResidentialTile implements BuildingTile
@@ -31,6 +30,11 @@ public class ResidentialTile implements BuildingTile
     @Override
     public BuildingType getType() {
         return BuildingType.RESIDENTIAL;
+    }
+
+    @Override
+    public String getShortName() {
+        return "R";
     }
 
 }
