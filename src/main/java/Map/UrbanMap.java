@@ -172,18 +172,18 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
         UrbanMap randomBuildingMap = new UrbanMap(initMap);
 
-        // Randomly set the number of each building to place
-        Random r = new Random();
-        int numIndustrial = r.nextInt(randomBuildingMap.maxIndustrial+1);
-        int numResidential = r.nextInt(randomBuildingMap.maxResidential+1);
-        int numCommercial = r.nextInt(randomBuildingMap.maxCommercial+1);
-
         // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < randomBuildingMap.mapHeight; row++){
             for(int col = 0; col < randomBuildingMap.mapWidth; col++){
                 randomBuildingMap.setBuildingAt(new NoBuildingTile(), row, col);
             }
         }
+
+        // Randomly set the number of each building to place
+        Random r = new Random();
+        int numIndustrial = r.nextInt(randomBuildingMap.maxIndustrial+1);
+        int numResidential = r.nextInt(randomBuildingMap.maxResidential+1);
+        int numCommercial = r.nextInt(randomBuildingMap.maxCommercial+1);
 
         // For the buildings, go through and add a building.
         int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
@@ -225,7 +225,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
             randRow = r.nextInt(mapHeight);
             randCol = r.nextInt(mapWidth);
 
-            if(randomBuildingMap.getTerrainAt(randRow, randCol).getType() == TerrainType.TOXIC ||
+            if(randomBuildingMap.getTerrainAt(randRow, randCol).type == TerrainType.TOXIC ||
                     randomBuildingMap.getTerrainAt(randRow, randCol).building.getType() != BuildingType.EMPTY) {
                 // Not a valid spot.
                 numTries++;
@@ -273,7 +273,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
                         }
                     }
                     else { //otherwise need to check terrain and building
-                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).getType() == tType && terrain.get(i).get(j).building.getType() == bType) {
+                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).getType() == tType /* && terrain.get(i).get(j).building.getType() == bType*/) {
                             count++;
                         }
                     }
@@ -381,4 +381,31 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
         }
     }
+
+    // A child map has the potential to mutate
+	public void mutate() {
+        // If a child map mutates, it means we will randomly drop another building on the map.
+        Random r = new Random();
+        int randRow = r.nextInt(this.mapHeight);
+        int randCol = r.nextInt(this.mapWidth);
+        int buildingNum = r.nextInt(3);
+        if(buildingNum == 0){
+            // Industrial
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new IndustrialTile());
+            }
+        }
+        else if(buildingNum == 1){
+            // Residential
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new ResidentialTile());
+            }
+        }
+        else if(buildingNum == 2){
+            // Commercial
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new CommercialTile());
+            }
+        }
+	}
 }
