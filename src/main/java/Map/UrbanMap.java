@@ -179,15 +179,14 @@ public class UrbanMap implements Comparable<UrbanMap> {
             }
         }
 
-        // Randomly set the number of each building to place
+        // Randomly choose the number of each building to place based on their max amounts.
         Random r = new Random();
         int numIndustrial = r.nextInt(randomBuildingMap.maxIndustrial+1);
         int numResidential = r.nextInt(randomBuildingMap.maxResidential+1);
         int numCommercial = r.nextInt(randomBuildingMap.maxCommercial+1);
 
-        // For the buildings, go through and add a building.
+        // Add the determined number of buildings.
         int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
-        maxBuildings = 1;
         for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
 
             if(numCommercial > 0){
@@ -209,7 +208,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
     /*
     * setBuildingRandomly()
-    * Sets this building type in a random location on the map.
+    * Sets the given building in a random location on the map.
     */
     private static void setBuildingRandomly(UrbanMap randomBuildingMap, BuildingTile building, Random r){
 
@@ -218,7 +217,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
         int randRow;
         int randCol;
 
-        // We will try to place the tile 6 times. After that, we will give up.
+        // We will try to place the building tile on the terrain 6 times. After that, we will give up.
         int numTries = 0;
         while(numTries < 6){
 

@@ -42,8 +42,8 @@ public class AlgorithmManager {
 
     }
 
-    public Metrics getMetrics() {
-        return new Metrics(0, 0, map); // TODO: return the actual metrics from the correct algorithm
-    }
+    // public Metrics getMetrics() {
+    //     return new Metrics(0, 0, map); // TODO: return the actual metrics from the correct algorithm
+    // }
 
 }

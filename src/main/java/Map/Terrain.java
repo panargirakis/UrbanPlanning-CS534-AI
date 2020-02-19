@@ -14,7 +14,7 @@ public class Terrain
     */
 
     // types: "Toxic", "Scenic", "Standard"
-    TerrainType type;
+    public TerrainType type;
     BuildingTile building;
     int difficulty;
 
