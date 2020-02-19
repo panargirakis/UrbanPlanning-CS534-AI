@@ -174,9 +174,9 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
         // Randomly set the number of each building to place
         Random r = new Random();
-        int numIndustrial = 1;//r.nextInt(this.maxIndustrial+1);
-        int numResidential = 1;//r.nextInt(this.maxResidential+1);
-        int numCommercial = 1;//r.nextInt(this.maxCommercial+1);
+        int numIndustrial = r.nextInt(randomBuildingMap.maxIndustrial+1);
+        int numResidential = r.nextInt(randomBuildingMap.maxResidential+1);
+        int numCommercial = r.nextInt(randomBuildingMap.maxCommercial+1);
 
         // Initialize all terrain to have NoBuildingTile
         for(int row = 0; row < randomBuildingMap.mapHeight; row++){
