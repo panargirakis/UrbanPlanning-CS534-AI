@@ -37,8 +37,6 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
     /* Map Constructor */
     public UrbanMap(String mapFileToParse) {
-        // Right now takes a string with all the terrain. May want to update to be a
-        // different input type?
         this.generateMapTerrain(mapFileToParse);
         // Initialize all terrain to have NoBuildingTile
         for (int row = 0; row < this.mapHeight; row++) {
@@ -53,10 +51,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
         this.mapWidth = originalMap.mapWidth;
         this.mapHeight = originalMap.mapHeight;
-
         this.cloneTerrain(originalMap);
-        // this.terrain.addAll(originalMap.terrain);
-        // Collections.copy(this.terrain, originalMap.terrain);
         
         this.maxResidential = originalMap.maxResidential;
         this.maxCommercial = originalMap.maxCommercial;
@@ -66,27 +61,19 @@ public class UrbanMap implements Comparable<UrbanMap> {
     private void cloneTerrain(UrbanMap originalMap){
 
         ArrayList<ArrayList<Terrain>> terrainToClone = (ArrayList<ArrayList<Terrain>>) originalMap.terrain.clone();
-
         this.terrain = new ArrayList<ArrayList<Terrain>>();
 
         for(int row = 0; row < this.mapHeight; row++){
-
             ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
-
             for(int col = 0; col < this.mapWidth; col++){
-
                 lineOfTerrain.add(null);
-
             }
             this.terrain.add(lineOfTerrain);
-
         }
 
         for(int row = 0; row < this.mapHeight; row++){
             for(int col = 0; col < this.mapWidth; col++){
-
                 this.terrain.get(row).set(col, new Terrain(terrainToClone.get(row).get(col)));
-
             }
         }
 
@@ -173,7 +160,6 @@ public class UrbanMap implements Comparable<UrbanMap> {
                 mapValue += this.getTerrainAt(row, col).getValue(this, row, col);
             }
         }
-        //System.out.println(mapValue);
         return mapValue;
     }
 
@@ -314,11 +300,8 @@ public class UrbanMap implements Comparable<UrbanMap> {
             result += "\n";
         }
 
-        result += "\n\n";
-        result += ("Value: " + this.getValueOfMap());
-        result += "\n";
+        result += ("\nValue: " + this.getValueOfMap());
 
-        // result += (this.getValueOfMap());
         return result;
     }
 
