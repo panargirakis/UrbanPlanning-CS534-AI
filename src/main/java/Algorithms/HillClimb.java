@@ -3,18 +3,15 @@ package Algorithms;
 import Buildings.BuildingType;
 import Buildings.BuildingTile;
 import Buildings.NoBuildingTile;
-import Map.TerrainType;
-import Map.Terrain;
 import Map.UrbanMap;
 import java.util.Random;
-import java.util.ArrayList;
 
 public class HillClimb {
 
     UrbanMap startMap;
     UrbanMap bestMap;
     int bestValue;
-    int temperature;
+    double temperature;
     double decreaseRatio;
     int maxRestart;
     int maxWorseMoves;
@@ -22,7 +19,7 @@ public class HillClimb {
     /*
     * Constructor
      */
-    public HillClimb(UrbanMap map, int temp, double decrease, int restart, int worse) {
+    public HillClimb(UrbanMap map, double temp, double decrease, int restart, int worse) {
         this.startMap = new UrbanMap(map);
         this.bestMap = new UrbanMap(map);
         this.bestValue = bestMap.getValueOfMap();
@@ -32,11 +29,15 @@ public class HillClimb {
         this.maxWorseMoves = worse;
     }
 
+    /*
+    * run the hill climb algorithm
+    * return the best valued map
+     */
     public UrbanMap runHillClimb() {
         UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
         long startTime = System.currentTimeMillis();
         int count; //counts number of consecutive sideways/worse moves
-        while(System.currentTimeMillis() - startTime < 3) {
+        while(System.currentTimeMillis() - startTime < 10000) {
             UrbanMap move = generateMove(currentMap);
             if (probability(move.getValueOfMap(), currentMap.getValueOfMap())) {
                 currentMap = move;
@@ -44,14 +45,28 @@ public class HillClimb {
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
+                System.out.println(bestMap);
             }
-            System.out.println(bestMap);
         }
+        System.out.println(bestMap);
         return bestMap;
     }
 
+    /*
+    * probability function for simulated annealing
+    * returns true if algorithm should make the proposed new move
+     */
     private boolean probability(int newValue, int currentValue) {
-        if (newValue > currentValue) return true; //take the move if it's better
+        if (newValue > currentValue) { //take the move if it is better
+            temperature *= decreaseRatio; //if we make a move, decrease the temp
+            return true;
+        }
+        double prob = Math.pow(Math.E, (newValue-currentValue)/temperature); //probability function
+        double value = Math.random();
+        if (value <= prob)  { //take the move according to probability function
+            temperature *= decreaseRatio; //if we make a move, decrease the temp
+            return true;
+        }
         return false;
     }
 

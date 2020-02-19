@@ -15,8 +15,8 @@ public class AlgorithmManager {
         this.map = map;
 
         this.geneticAlgorithm = new GeneticAlgorithm();
-        int temperature = 5;
-        double decreaseRatio = 0.01;
+        double temperature = 10;
+        double decreaseRatio = 0.99;
         int maxRestart = 5;
         int maxWorseMoves = 100;
         this.hillClimb = new HillClimb(map, temperature, decreaseRatio, maxRestart, maxWorseMoves); //send through an unpopulated map
