@@ -1,8 +1,6 @@
 package Algorithms;
 
-import Buildings.BuildingType;
-import Buildings.BuildingTile;
-import Buildings.NoBuildingTile;
+import Buildings.*;
 import Map.UrbanMap;
 import java.util.Random;
 
@@ -11,6 +9,7 @@ public class HillClimb {
     UrbanMap startMap;
     UrbanMap bestMap;
     int bestValue;
+    double bestTime;
     double temperature;
     double decreaseRatio;
     int maxRestart;
@@ -23,6 +22,7 @@ public class HillClimb {
         this.startMap = new UrbanMap(map);
         this.bestMap = new UrbanMap(map);
         this.bestValue = bestMap.getValueOfMap();
+        this.bestTime = 0;
         this.temperature = temp;
         this.decreaseRatio = decrease;
         this.maxRestart = restart;
@@ -35,7 +35,7 @@ public class HillClimb {
      */
     public UrbanMap runHillClimb() {
         UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
-        long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis(); //start the time
         int count = 0; //counts number of consecutive sideways/worse moves
         int restarts = 0; //counts the number of times algorithm has restarted
         while(System.currentTimeMillis() - startTime < 10000) {
@@ -51,7 +51,6 @@ public class HillClimb {
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
-                //System.out.println(bestMap);
             }
         }
         System.out.println(bestMap);
@@ -63,7 +62,6 @@ public class HillClimb {
     * returns true if algorithm should make the proposed new move
      */
     private boolean probability(int newValue, int currentValue) {
-        //System.out.println(newValue + " " + currentValue);
         if (newValue > currentValue) { //take the move if it is better
             temperature *= decreaseRatio; //if we make a move, decrease the temp
             return true;
@@ -79,19 +77,35 @@ public class HillClimb {
 
     /*
     * given a map generates a next possible move
-    * currently only moves buildings, does not add or remove
+    * moves, adds, or removes a single building
      */
     private UrbanMap generateMove(UrbanMap map) {
-        UrbanMap newMove = new UrbanMap(map);
-        //first check if the map has any buildings
-        int buildings = 0;
-        for (int i = 0; i < map.getRows(); i++) {
-            for (int j = 0; j < map.getCols(); j++) {
-                if (map.getTerrainAt(i, j).getBuildingType() != BuildingType.EMPTY) buildings++;
+        Random rand = new Random();
+        boolean valid = false;
+        int buildings = map.getBuildingTotalCount();
+        int choice = 0;
+        while (!valid) { //determine what type of new move to take
+            choice = rand.nextInt(3);
+            if (choice == 0) { //0 is move building, should be at least one building
+                if (buildings > 0) valid = true;
+            }
+            if (choice == 1) { //1 is add building, should be under limit
+                if (buildings < map.getMaxCommercial() + map.getMaxIndustrial() + map.getMaxResidential()) valid = true;
+            }
+            if (choice == 2) { //2 is remove building, should be at least one building
+                if (buildings > 0) valid = true;
             }
         }
-        //if the map has no buildings, just return the map or algorithm gets stuck in a loop
-        if (buildings == 0) return newMove;
+        if (choice == 0) return moveBuilding(map);
+        if (choice == 1) return addBuilding(map);
+        return removeBuilding(map);
+    }
+
+    /*
+    * moves a building on the map to an empty space
+     */
+    private UrbanMap moveBuilding(UrbanMap map) {
+        UrbanMap newMove = new UrbanMap(map);
         Random rand = new Random();
         int startRow = 0; int startCol = 0; int endRow = 0; int endCol = 0;
         boolean valid = false;
@@ -111,6 +125,62 @@ public class HillClimb {
         BuildingTile b = map.getTerrainAt(startRow, startCol).getBuildingTile();
         newMove.setBuildingAt(new NoBuildingTile(), startRow, startCol); //removes building froms start location
         newMove.setBuildingAt(b, endRow, endCol); //puts a building on end location
+        return newMove;
+    }
+
+    /*
+    * adds a new building to the map
+     */
+    private UrbanMap addBuilding(UrbanMap map) {
+        UrbanMap newMove = new UrbanMap(map);
+        Random rand = new Random();
+        int row = 0; int col = 0;
+        boolean valid = false;
+        //find an empty spot
+        while (!valid) {
+            row = rand.nextInt(map.getRows());
+            col = rand.nextInt(map.getCols());
+            if (map.getTerrainAt(row, col).getBuildingType() == BuildingType.EMPTY) valid = true;
+        }
+        int choice = 0;
+        valid = false;
+        //determine which type of building to add
+        while (!valid) {
+            choice = rand.nextInt(3);
+            switch (choice) {
+                case 0:
+                    if (map.getBuildingTypeCount(BuildingType.INDUSTRIAL) < map.getMaxIndustrial()) valid = true;
+                    break;
+                case 1:
+                    if (map.getBuildingTypeCount(BuildingType.COMMERCIAL) < map.getMaxCommercial()) valid = true;
+                    break;
+                case 2:
+                    if (map.getBuildingTypeCount(BuildingType.RESIDENTIAL) < map.getMaxResidential()) valid = true;
+                    break;
+            }
+        }
+        //set the new building
+        if (choice == 0) newMove.setBuildingAt(new IndustrialTile(), row, col);
+        if (choice == 1) newMove.setBuildingAt(new CommercialTile(), row, col);
+        if (choice == 2) newMove.setBuildingAt(new ResidentialTile(), row, col);
+        return newMove;
+    }
+
+    /*
+    * removes a building from the map
+     */
+    private UrbanMap removeBuilding(UrbanMap map) {
+        UrbanMap newMove = new UrbanMap(map);
+        Random rand = new Random();
+        int row = 0; int col = 0;
+        boolean valid = false;
+        //find a position with a building
+        while (!valid) {
+            row = rand.nextInt(map.getRows());
+            col = rand.nextInt(map.getCols());
+            if (map.getTerrainAt(row, col).getBuildingType() != BuildingType.EMPTY) valid = true;
+        }
+        newMove.setBuildingAt(new NoBuildingTile(), row, col); //remove the building
         return newMove;
     }
 

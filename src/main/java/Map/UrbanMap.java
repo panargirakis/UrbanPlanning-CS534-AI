@@ -381,6 +381,39 @@ public class UrbanMap implements Comparable<UrbanMap> {
         }
     }
 
+   /*
+   * returns the number of buildings currently on the map
+    */
+    public int getBuildingTotalCount() {
+        int buildings = 0;
+        for (int i = 0; i < terrain.size(); i++) {
+            for (int j = 0; j < terrain.get(0).size(); j++) {
+                if (terrain.get(i).get(j).getBuildingType() != BuildingType.EMPTY) buildings++;
+            }
+        }
+        return buildings;
+    }
+
+    /*
+    * return the number of buildings currently on the map of the given type
+     */
+    public int getBuildingTypeCount(BuildingType type) {
+        int buildings = 0;
+        for (int i = 0; i < terrain.size(); i++) {
+            for (int j = 0; j < terrain.get(0).size(); j++) {
+                if (terrain.get(i).get(j).getBuildingType() == type) buildings++;
+            }
+        }
+        return buildings;
+    }
+
+    /*
+    * return the max amount of buildings allowed for the given type
+     */
+    public int getMaxCommercial() { return maxCommercial; }
+    public int getMaxResidential() { return maxResidential; }
+    public int getMaxIndustrial() { return maxIndustrial; }
+
     // A child map has the potential to mutate
 	public void mutate() {
         // If a child map mutates, it means we will randomly drop another building on the map.
