@@ -1,41 +1,85 @@
 package Map;
 
-import com.opencsv.CSVReader;
-
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import Map.Terrain;
-import Buildings.ResidentialTile;
-import Map.TerrainType;
-import Buildings.BuildingType;
+import java.util.Random;
+import java.util.Collections;
 
-public class UrbanMap
-{
+import com.opencsv.CSVReader;
+
+import Buildings.BuildingTile;
+import Buildings.BuildingType;
+import Buildings.CommercialTile;
+import Buildings.IndustrialTile;
+import Buildings.NoBuildingTile;
+import Buildings.ResidentialTile;
+
+public class UrbanMap implements Comparable<UrbanMap> {
     // max allowed industrial
-    int maxIndustrial;
+    public int maxIndustrial;
 
     // max commercial
-    int maxCommercial;
+    public int maxCommercial;
 
     // max residential
-    int maxResidential;
+    public int maxResidential;
+
+    // map width and height
+    public int mapWidth;
+    public int mapHeight;
 
     // Terrain 2D Array (changed to nested arraylist, easier to populate)
     private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
-    public UrbanMap(String mapFileToParse){
-        // Right now takes a string with all the terrain. May want to update to be a different input type?
-
+    public UrbanMap(String mapFileToParse) {
         this.generateMapTerrain(mapFileToParse);
+        // Initialize all terrain to have NoBuildingTile
+        for (int row = 0; row < this.mapHeight; row++) {
+            for (int col = 0; col < this.mapWidth; col++) {
+                this.setBuildingAt(new NoBuildingTile(), row, col);
+            }
+        }
     }
 
-    /*
+    // Constructor for new maps created from origional map
+    public UrbanMap(UrbanMap originalMap) {
+
+        this.mapWidth = originalMap.mapWidth;
+        this.mapHeight = originalMap.mapHeight;
+        this.cloneTerrain(originalMap);
+        
+        this.maxResidential = originalMap.maxResidential;
+        this.maxCommercial = originalMap.maxCommercial;
+        this.maxIndustrial = originalMap.maxIndustrial;
+    }
+
+    private void cloneTerrain(UrbanMap originalMap){
+
+        ArrayList<ArrayList<Terrain>> terrainToClone = (ArrayList<ArrayList<Terrain>>) originalMap.terrain.clone();
+        this.terrain = new ArrayList<ArrayList<Terrain>>();
+
+        for(int row = 0; row < this.mapHeight; row++){
+            ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
+            for(int col = 0; col < this.mapWidth; col++){
+                lineOfTerrain.add(null);
+            }
+            this.terrain.add(lineOfTerrain);
+        }
+
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+                this.terrain.get(row).set(col, new Terrain(terrainToClone.get(row).get(col)));
+            }
+        }
+
+    }
+
+	/*
     * generateMap(String mapFileToParse)
     * Takes a text file as a string (or other format) and generates the terrain layout.
     * May belong in IOModule - just have it here temporarily
@@ -55,16 +99,18 @@ public class UrbanMap
                     System.out.println(line);
 
                     if (lineIndex == 0) // parse max industrial
-                        maxIndustrial = Integer.parseInt(line.get(0));
+                        this.maxIndustrial = Integer.parseInt(line.get(0));
                     else if (lineIndex == 1) // parse max commercial
-                        maxCommercial = Integer.parseInt(line.get(0));
+                        this.maxCommercial = Integer.parseInt(line.get(0));
                     else if (lineIndex == 2) // parse max residential
-                        maxResidential = Integer.parseInt(line.get(0));
+                        this.maxResidential = Integer.parseInt(line.get(0));
                     else { // parse map
                         ArrayList<Terrain> lineOfTerrain = new ArrayList<>();
 
+                        this.mapWidth = line.size();    // Set mapWidth
+
                         // go through everything in the line and create terrain
-                        for (int colIndex = 0; colIndex < line.size(); colIndex++) {
+                        for (int colIndex = 0; colIndex < mapWidth; colIndex++) {
                             lineOfTerrain.add(new Terrain(line.get(colIndex)));
                         }
                         this.terrain.add(lineOfTerrain); // add populated line to terrain
@@ -76,6 +122,7 @@ public class UrbanMap
             catch (IOException e) { // handle IO exception from readNext()
                 System.out.println(e.getMessage());
             }
+            this.mapHeight = (lineIndex - 3);
         }
         catch (FileNotFoundException e) { // handle FileNotFoundException
             System.out.println(e.getMessage());
@@ -98,42 +145,105 @@ public class UrbanMap
         return terrain.get(0).size();
     }
 
-    /*
-    * setBuildingsOnMap()
-    * Places buildings on map randomly.
-    * There are a max number of industrial/residential/commercial zones in each inpout file.
-    */
-    public void setBuildingsOnMapRandomly(int maxIndustrial, int maxResidential, int maxCommercial){
-        // Cannot build directly on a toxic waste site
-
-        for(int row = 0; row < this.terrain.size(); row++){
-            for(int col = 0; col < this.terrain.get(row).size(); col++){
-
-                terrain.get(row).get(col).setBuilding(new ResidentialTile());
-
-            }
-        }
-
-    }
-
-    /*
+        /*
     * getValueOfMap()
     * Returns the value of the map with the current urban layout.
     */
     public int getValueOfMap(){
         int mapValue = 0;
 
-        //Iterate through every Terrain eleemnt of 2D array and check its value
-        for(int row = 0; row < this.terrain.size(); row++){
-            for(int col = 0; col < this.terrain.get(row).size(); col++){
+        //Iterate through every Terrain element of 2D array and check its value
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
 
                 // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.terrain.get(row).get(col).getValue(this, row, col);
+                mapValue += this.getTerrainAt(row, col).getValue(this, row, col);
+            }
+        }
+        return mapValue;
+    }
 
+    /*
+    * randomBuildingsMap()
+    * Places buildings on map randomly.
+    * There are a max number of industrial/residential/commercial zones in each input file.
+    */
+    public static UrbanMap randomBuildingsMap(UrbanMap initMap){
+
+        UrbanMap randomBuildingMap = new UrbanMap(initMap);
+
+        // Initialize all terrain to have NoBuildingTile
+        for(int row = 0; row < randomBuildingMap.mapHeight; row++){
+            for(int col = 0; col < randomBuildingMap.mapWidth; col++){
+                randomBuildingMap.setBuildingAt(new NoBuildingTile(), row, col);
             }
         }
 
-        return mapValue;
+        // Randomly set the number of each building to place
+        Random r = new Random();
+        int numIndustrial = r.nextInt(randomBuildingMap.maxIndustrial+1);
+        int numResidential = r.nextInt(randomBuildingMap.maxResidential+1);
+        int numCommercial = r.nextInt(randomBuildingMap.maxCommercial+1);
+
+        // For the buildings, go through and add a building.
+        int maxBuildings = Math.max(Math.max(numIndustrial, numCommercial), numResidential);
+        maxBuildings = 1;
+        for(int nextBuilding = 0; nextBuilding < maxBuildings; nextBuilding++){
+
+            if(numCommercial > 0){
+                setBuildingRandomly(randomBuildingMap, new CommercialTile(), r);
+                numCommercial--;
+            }
+            if(numIndustrial > 0){
+                setBuildingRandomly(randomBuildingMap, new IndustrialTile(), r);
+                numIndustrial--;
+            }
+            if(numResidential > 0){
+                setBuildingRandomly(randomBuildingMap, new ResidentialTile(), r);
+                numResidential--;
+            }
+        }
+
+        return randomBuildingMap;
+    }
+
+    /*
+    * setBuildingRandomly()
+    * Sets this building type in a random location on the map.
+    */
+    private static void setBuildingRandomly(UrbanMap randomBuildingMap, BuildingTile building, Random r){
+
+        int mapHeight = randomBuildingMap.mapHeight;
+        int mapWidth = randomBuildingMap.mapWidth;
+        int randRow;
+        int randCol;
+
+        // We will try to place the tile 6 times. After that, we will give up.
+        int numTries = 0;
+        while(numTries < 6){
+
+            randRow = r.nextInt(mapHeight);
+            randCol = r.nextInt(mapWidth);
+
+            if(randomBuildingMap.getTerrainAt(randRow, randCol).type == TerrainType.TOXIC ||
+                    randomBuildingMap.getTerrainAt(randRow, randCol).building.getType() != BuildingType.EMPTY) {
+                // Not a valid spot.
+                numTries++;
+            }
+            else {
+                // Valid Spot. Set building and exit while loop.
+                randomBuildingMap.setBuildingAt(building, randRow, randCol);
+                numTries = 6;
+            }
+        }
+    }
+
+    public Terrain getTerrainAt(int row, int col){
+        return this.terrain.get(row).get(col);
+    }
+
+    public void setBuildingAt(BuildingTile building, int row, int col){
+        this.terrain.get(row).get(col).setBuilding(building);
     }
 
     /*
@@ -163,7 +273,7 @@ public class UrbanMap
                         }
                     }
                     else { //otherwise need to check terrain and building
-                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).getType() == tType && terrain.get(i).get(j).building.getType() == bType) {
+                        if (manhattan <= n && manhattan > 0 && terrain.get(i).get(j).getType() == tType /* && terrain.get(i).get(j).building.getType() == bType*/) {
                             count++;
                         }
                     }
@@ -171,6 +281,28 @@ public class UrbanMap
             }
         }
         return count;
+    }
+
+    // Set the building at the row,col coordinates to the building of the given map
+    public void replaceBuildingFromMap(int row, int col, UrbanMap replacementMap) {
+        this.setBuildingAt(replacementMap.getTerrainAt(row,col).building, row, col);
+    }
+
+    // Overides the toString() method. Prints the buildings and value of the map.
+    @Override
+    public String toString(){
+        String result = "";
+
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+                result += this.getTerrainAt(row, col).building.getShortName();
+            }
+            result += "\n";
+        }
+
+        result += ("\nValue: " + this.getValueOfMap());
+
+        return result;
     }
 
     // returns the map in a format that can be printed to the final CSV file
@@ -182,4 +314,98 @@ public class UrbanMap
         return result;
     }
 
+    // Allows for a map to be compared to another.
+    @Override
+    public int compareTo(UrbanMap compareMap) {
+
+        if(this.getValueOfMap() > compareMap.getValueOfMap()){
+            return -1;
+        }
+        else if(this.getValueOfMap() < compareMap.getValueOfMap()){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
+	public void ensureSatisfiesBuildingCount(BuildingType buildingType, int maxBuildings){
+
+        Random r = new Random();
+        // Get the number of this building type on map
+        int numBuildings = 0;
+        for(int row = 0; row < this.mapHeight; row++){
+            for(int col = 0; col < this.mapWidth; col++){
+                if(this.getTerrainAt(row, col).building.getType() == buildingType){
+                    numBuildings++;
+                }
+            }
+        }
+
+        // Will loop until the number of buildings is a satisfactory amount
+        boolean satisfiesMaxBuildings = false;
+        while(!satisfiesMaxBuildings){
+
+            if(numBuildings <= maxBuildings){
+                // All set, the building count is ok
+                satisfiesMaxBuildings = true;
+            }
+            else{
+                // Too many buildings. Need to delete a building and check if it satisfies.
+                int row = 0;
+                int col = 0;
+                boolean deletedBuilding = false;
+                while(!deletedBuilding){
+
+                    // These will be the starting coordinates. Once it reaches a correct building tile, it deletes it and quits.
+                    row = r.nextInt(this.mapHeight);
+                    col = r.nextInt(this.mapWidth);
+
+                    if(this.getTerrainAt(row, col).building.getType() == buildingType) {
+                        this.getTerrainAt(row, col).setBuilding(new NoBuildingTile());
+                        // We've deleted a building, now we can leave the loop and deceremented the number of this building types on the map.
+                        deletedBuilding = true;
+                        numBuildings--;
+                    }
+
+                    row++;
+                    col++;
+                    if(row >= this.mapHeight){
+                        row = 0;
+                    }
+                    if(col >= this.mapWidth){
+                        col = 0;
+                    }
+                }
+            }
+
+        }
+    }
+
+    // A child map has the potential to mutate
+	public void mutate() {
+        // If a child map mutates, it means we will randomly drop another building on the map.
+        Random r = new Random();
+        int randRow = r.nextInt(this.mapHeight);
+        int randCol = r.nextInt(this.mapWidth);
+        int buildingNum = r.nextInt(3);
+        if(buildingNum == 0){
+            // Industrial
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new IndustrialTile());
+            }
+        }
+        else if(buildingNum == 1){
+            // Residential
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new ResidentialTile());
+            }
+        }
+        else if(buildingNum == 2){
+            // Commercial
+            if(this.getTerrainAt(randRow, randCol).type != TerrainType.TOXIC){
+                this.getTerrainAt(randRow, randCol).setBuilding(new CommercialTile());
+            }
+        }
+	}
 }

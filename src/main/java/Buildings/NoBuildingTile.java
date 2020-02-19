@@ -19,4 +19,9 @@ public class NoBuildingTile implements BuildingTile
         return BuildingType.EMPTY;
     }
 
+    @Override
+    public String getShortName() {
+        return "#";
+    }
+
 }
