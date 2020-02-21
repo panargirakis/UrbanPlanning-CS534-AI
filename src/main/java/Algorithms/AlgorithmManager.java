@@ -41,10 +41,7 @@ public class AlgorithmManager {
             int numParents = 200; 
             int numNew = 100; // Add new random maps to the simulation (Remainder after parents and children)
             int mutationChance = 5; // there is a 1/mutationChance chance that the child will have some mutation.
-            UrbanMap bestMap = GeneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew, mutationChance);
-
-            System.out.println("FINAL MAP:\n");
-            System.out.println(bestMap);
+            this.finalResult = GeneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSize, numChildren, numParents, numNew, mutationChance);
         }
 
     }

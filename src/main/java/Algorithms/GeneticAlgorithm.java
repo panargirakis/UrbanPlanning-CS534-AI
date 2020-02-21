@@ -16,7 +16,7 @@ public class GeneticAlgorithm {
     /*
      * runGeneticAlgorithm() Runs the genetic algorithm on the given terrain map.
      */
-    static public UrbanMap runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int generationSize, int numChildren, int numParents, int numNew, int mutationChance) {
+    static public Metrics runGeneticAlgorithm(UrbanMap initMap, int numGenerations, int generationSize, int numChildren, int numParents, int numNew, int mutationChance) {
 
         // 1: Create the initial population of x maps with random buildings
         List<UrbanMap> initialPopulation = GeneticAlgorithm.generateRandomPopulation(initMap, generationSize);
@@ -26,7 +26,8 @@ public class GeneticAlgorithm {
 
         /* CHOOSE BEST MAP FROM FINAL GENERATION */
         Collections.sort(finalGeneration);
-        return finalGeneration.get(0);
+        UrbanMap finalMap = finalGeneration.get(0);
+        return new Metrics(finalMap.getValueOfMap(), 0, finalMap.getStringRepresentation());
     }
 
     static private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> initialPopulation, int numGenerations, int numChildren, int numParents, int numNew, int mutationChance) {
