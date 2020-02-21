@@ -10,6 +10,8 @@ public class AlgorithmManager {
 
     Options options;
 
+    Metrics finalResult;
+
     public AlgorithmManager(Options options, UrbanMap map) {
         this.options = options;
         this.map = map;
@@ -29,7 +31,7 @@ public class AlgorithmManager {
     public void run() {
         if (options.isUsingHillClimb()){
             // Hill Climb
-            hillClimb.runHillClimb();
+            this.finalResult = hillClimb.runHillClimb();
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
@@ -48,7 +50,7 @@ public class AlgorithmManager {
     }
 
      public Metrics getMetrics() {
-         return new Metrics(0, 0, map.getStringRepresentation()); // TODO: return the actual metrics from the correct algorithm
+         return this.finalResult;
      }
 
 }

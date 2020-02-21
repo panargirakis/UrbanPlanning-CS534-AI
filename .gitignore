@@ -7,3 +7,4 @@
 bin/
 .classpath
 .settings
+/src/main/resources/results.csv
