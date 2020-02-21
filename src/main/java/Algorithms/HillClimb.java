@@ -33,12 +33,12 @@ public class HillClimb {
     * run the hill climb algorithm
     * return the best valued map
      */
-    public UrbanMap runHillClimb() {
+    public Metrics runHillClimb() {
         UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
         long startTime = System.currentTimeMillis(); //start the time
         int count = 0; //counts number of consecutive sideways/worse moves
         int restarts = 0; //counts the number of times algorithm has restarted
-        while(System.currentTimeMillis() - startTime < 10000) {
+        while(System.currentTimeMillis() - startTime < 1000) {
             if (count > minWorseMoves && restarts < maxRestart) { //if we reach the minimum worse move count, do a restart if we are within limit
                 currentMap = UrbanMap.randomBuildingsMap(startMap);
                 count = 0;
@@ -56,7 +56,7 @@ public class HillClimb {
         }
         System.out.println(bestMap);
         System.out.println(bestTime);
-        return bestMap;
+        return new Metrics(bestValue, bestTime, bestMap.getStringRepresentation());
     }
 
     /*
