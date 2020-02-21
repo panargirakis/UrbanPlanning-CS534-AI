@@ -23,7 +23,7 @@ public class WriteResults {
                         CSVWriter.DEFAULT_LINE_END);
         ) {
             String[] headerRecord = {"Max Score: ", Integer.toString(metrics.getScore()),
-                                    "Time achieved:", Integer.toString(metrics.getTimeAchieved())};
+                                    "Time achieved:", Double.toString(metrics.getTimeAchieved())};
             csvWriter.writeNext(headerRecord);
 
             // TODO: write the map

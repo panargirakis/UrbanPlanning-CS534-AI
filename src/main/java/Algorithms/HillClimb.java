@@ -22,7 +22,7 @@ public class HillClimb {
         this.startMap = new UrbanMap(map);
         this.bestMap = new UrbanMap(map);
         this.bestValue = bestMap.getValueOfMap();
-        this.bestTime = 0;
+        this.bestTime = 0.0;
         this.temperature = temp;
         this.decreaseRatio = decrease;
         this.maxRestart = restart;
@@ -33,7 +33,7 @@ public class HillClimb {
     * run the hill climb algorithm
     * return the best valued map
      */
-    public UrbanMap runHillClimb() {
+    public Metrics runHillClimb() {
         UrbanMap currentMap = UrbanMap.randomBuildingsMap(startMap);
         long startTime = System.currentTimeMillis(); //start the time
         int count = 0; //counts number of consecutive sideways/worse moves
@@ -51,10 +51,12 @@ public class HillClimb {
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
+                bestTime = ((double)(System.currentTimeMillis()-startTime))/1000;
             }
         }
         System.out.println(bestMap);
-        return bestMap;
+        System.out.println(bestTime);
+        return new Metrics(bestValue, bestTime, bestMap.getStringRepresentation());
     }
 
     /*
