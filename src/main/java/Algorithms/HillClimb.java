@@ -22,7 +22,7 @@ public class HillClimb {
         this.startMap = new UrbanMap(map);
         this.bestMap = new UrbanMap(map);
         this.bestValue = bestMap.getValueOfMap();
-        this.bestTime = 0;
+        this.bestTime = 0.0;
         this.temperature = temp;
         this.decreaseRatio = decrease;
         this.maxRestart = restart;
@@ -51,9 +51,11 @@ public class HillClimb {
             if (currentMap.getValueOfMap() > bestValue) {
                 bestMap = currentMap;
                 bestValue = currentMap.getValueOfMap();
+                bestTime = ((double)(System.currentTimeMillis()-startTime))/1000;
             }
         }
         System.out.println(bestMap);
+        System.out.println(bestTime);
         return bestMap;
     }
 
