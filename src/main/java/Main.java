@@ -2,6 +2,7 @@ import Algorithms.AlgorithmManager;
 import Algorithms.HillClimb;
 import Algorithms.Metrics;
 import IO.Options;
+import IO.WriteResults;
 import Map.UrbanMap;
 
 public class Main
@@ -33,8 +34,15 @@ public class Main
         AlgorithmManager solver = new AlgorithmManager(options, map);
 
         solver.run();
-        //Metrics result = solver.getMetrics();
+        Metrics result = solver.getMetrics();
 
-        // then print result back (use WriteResults class)
+//        try {
+//            WriteResults.writeResults(result, "[insert file name]]/results.csv");
+//        }
+//        catch (Exception e) {
+//            System.out.println("Could not write results to csv file. An error occured:");
+//            System.out.println(e.getMessage());
+//        }
+
     }
 }

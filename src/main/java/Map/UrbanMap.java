@@ -308,9 +308,15 @@ public class UrbanMap implements Comparable<UrbanMap> {
     public ArrayList<ArrayList<String>> getStringRepresentation() {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
 
-        // TODO: need to implement
+        for (ArrayList<Terrain> row: this.terrain) { // go through every row
+            ArrayList<String> newLine = new ArrayList<>(); // create string row
+            for (Terrain square : row) { // for every square
+                newLine.add(square.getBuildingType().getSymbol()); // add symbol of building
+            }
+            result.add(newLine); // add the row to result
+        }
 
-        return result;
+        return result; // return result
     }
 
     // Allows for a map to be compared to another.
