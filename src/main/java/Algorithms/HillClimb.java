@@ -38,7 +38,7 @@ public class HillClimb {
         long startTime = System.currentTimeMillis(); //start the time
         int count = 0; //counts number of consecutive sideways/worse moves
         int restarts = 0; //counts the number of times algorithm has restarted
-        while(System.currentTimeMillis() - startTime < 2000) {
+        while(System.currentTimeMillis() - startTime < 10000) {
             if (count > minWorseMoves && restarts < maxRestart) { //if we reach the minimum worse move count, do a restart if we are within limit
                 currentMap = UrbanMap.randomBuildingsMap(startMap);
                 count = 0;
