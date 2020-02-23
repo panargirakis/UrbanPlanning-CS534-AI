@@ -179,7 +179,7 @@ public class GeneticAlgorithm {
 
         // Potential Chance for Mutation
         if(r.nextInt(mutationChance) == 1){
-            childMap.mutafte();
+            childMap.mutate();
         }
 
         // If there are too many of any building type, just randomly delete some until its ok
