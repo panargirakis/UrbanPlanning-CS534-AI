@@ -32,11 +32,14 @@ public class UrbanMap implements Comparable<UrbanMap> {
     public int mapWidth;
     public int mapHeight;
 
+    private int mapValue;
+
     // Terrain 2D Array (changed to nested arraylist, easier to populate)
     private ArrayList<ArrayList<Terrain>> terrain;
 
     /* Map Constructor */
     public UrbanMap(String mapFileToParse) {
+        this.mapValue = -9999;
         this.generateMapTerrain(mapFileToParse);
         // Initialize all terrain to have NoBuildingTile
         for (int row = 0; row < this.mapHeight; row++) {
@@ -48,7 +51,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
 
     // Constructor for new maps created from origional map
     public UrbanMap(UrbanMap originalMap) {
-
+        this.mapValue = -9999;
         this.mapWidth = originalMap.mapWidth;
         this.mapHeight = originalMap.mapHeight;
         this.cloneTerrain(originalMap);
@@ -150,17 +153,19 @@ public class UrbanMap implements Comparable<UrbanMap> {
     * Returns the value of the map with the current urban layout.
     */
     public int getValueOfMap(){
-        int mapValue = 0;
 
-        //Iterate through every Terrain element of 2D array and check its value
-        for(int row = 0; row < this.mapHeight; row++){
-            for(int col = 0; col < this.mapWidth; col++){
-
-                // Get the value of the current terrain and tile. Add to mapValue.
-                mapValue += this.getTerrainAt(row, col).getValue(this, row, col);
+        if(this.mapValue == -9999){
+            this.mapValue = 0;
+            //Iterate through every Terrain element of 2D array and check its value
+            for(int row = 0; row < this.mapHeight; row++){
+                for(int col = 0; col < this.mapWidth; col++){
+                    // Get the value of the current terrain and tile. Add to this.mapValue.
+                    this.mapValue += this.getTerrainAt(row, col).getValue(this, row, col);
+                }
             }
         }
-        return mapValue;
+
+        return this.mapValue;
     }
 
     /*
@@ -290,7 +295,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
     // Overides the toString() method. Prints the buildings and value of the map.
     @Override
     public String toString(){
-        String result = "";
+        String result = "\nBuilding Layout:\n";
 
         for(int row = 0; row < this.mapHeight; row++){
             for(int col = 0; col < this.mapWidth; col++){
@@ -299,7 +304,7 @@ public class UrbanMap implements Comparable<UrbanMap> {
             result += "\n";
         }
 
-        result += ("\nValue: " + this.getValueOfMap());
+        result += ("\nMap Value: " + this.getValueOfMap());
 
         return result;
     }
