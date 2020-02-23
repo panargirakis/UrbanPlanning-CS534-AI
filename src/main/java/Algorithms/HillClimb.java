@@ -38,7 +38,7 @@ public class HillClimb {
         long startTime = System.currentTimeMillis(); //start the time
         int count = 0; //counts number of consecutive sideways/worse moves
         int restarts = 0; //counts the number of times algorithm has restarted
-        while(System.currentTimeMillis() - startTime < 10000) {
+        while(System.currentTimeMillis() - startTime < 2000) {
             if (count > minWorseMoves && restarts < maxRestart) { //if we reach the minimum worse move count, do a restart if we are within limit
                 currentMap = UrbanMap.randomBuildingsMap(startMap);
                 count = 0;
@@ -64,10 +64,10 @@ public class HillClimb {
     * returns true if algorithm should make the proposed new move
      */
     private boolean probability(int newValue, int currentValue) {
-        if (newValue > currentValue) { //take the move if it is better
-            temperature *= decreaseRatio; //if we make a move, decrease the temp
-            return true;
-        }
+//        if (newValue > currentValue) { //take the move if it is better
+//            temperature *= decreaseRatio; //if we make a move, decrease the temp
+//            return true;
+//        }
         double prob = Math.pow(Math.E, (newValue-currentValue)/temperature); //probability function
         double value = Math.random();
         if (value <= prob)  { //take the move according to probability function
