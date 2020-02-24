@@ -55,7 +55,7 @@ public class HillClimb {
             }
         }
         System.out.println(bestMap);
-        System.out.println(bestTime);
+        System.out.println("The value was achieved at time (seconds): " + bestTime);
         return new Metrics(bestValue, bestTime, bestMap.getStringRepresentation());
     }
 
