@@ -35,13 +35,13 @@ public class AlgorithmManager {
         }
         else{
             // Genetic Algorithm (These inputs can be tweaked)
-            int numGenerations = 5000;  // This is likely to be superceded by the 10 second time limit.
-            int generationSizeElitism = 50; // ELITISM PARAMETER - Limits the size of the generations by choosing the best of them.
-            int numParents = 40; // The number of parents to choose from a generation.
-            int numChildren = 80; // The number of children a generation should create.
-            int numNew = 40; // Add new additional random maps to the simulation (new 'Genes').
+            int numGenerations = 50000;  // This is likely to be superceded by the 10 second time limit.
+            int generationSizeElitism = 200; // ELITISM PARAMETER - Limits the size of the generations by choosing the best of them.
+            int numParents = 100; // The number of parents to choose from a generation.
+            int numChildren = 200; // The number of children a generation should create.
+            int numNew = 100; // Add new additional random maps to the simulation (new 'Genes').
             int mutationChance = 5; // there is a 1/mutationChance chance that children will have some mutation.
-            long millisecondsToRun = 10000; // Run for X Milliseconds
+            long millisecondsToRun = 100; // Run for X Milliseconds
             this.finalResult = this.geneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSizeElitism, numParents, numChildren, numNew, mutationChance, millisecondsToRun);
         }
 
