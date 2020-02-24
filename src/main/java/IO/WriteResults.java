@@ -22,8 +22,8 @@ public class WriteResults {
                         CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                         CSVWriter.DEFAULT_LINE_END);
         ) {
-            String[] headerRecord = {"Max Score: ", Integer.toString(metrics.getScore()),
-                                    "Time achieved:", Double.toString(metrics.getTimeAchieved())};
+            String[] headerRecord = {"Max Score: " + Integer.toString(metrics.getScore()),
+                                    " Time achieved (seconds): " + Double.toString(metrics.getTimeAchieved())};
             csvWriter.writeNext(headerRecord);
 
             for (List<String> row : metrics.getMap()) {

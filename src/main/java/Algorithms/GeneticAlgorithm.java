@@ -42,7 +42,7 @@ public class GeneticAlgorithm {
         UrbanMap finalMap = finalGeneration.get(0);
         System.out.println(finalMap);
         System.out.println("Best Map Found At: " + this.bestSolutionTime + " milliseconds.");
-        return new Metrics(finalMap.getValueOfMap(), this.bestSolutionTime, finalMap.getStringRepresentation());
+        return new Metrics(finalMap.getValueOfMap(), this.bestSolutionTime / 1000.0, finalMap.getStringRepresentation());
     }
 
     private List<UrbanMap> runGenerations(UrbanMap initMap, List<UrbanMap> initialPopulation, int numGenerations, int generationSizeElitism, int numChildren, int numParents, int numNew, int mutationChance, long millisecondsToRun) {

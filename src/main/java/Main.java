@@ -36,13 +36,15 @@ public class Main
         solver.run();
         Metrics result = solver.getMetrics();
 
-//        try {
-//            WriteResults.writeResults(result, "[insert file name]]/results.csv");
-//        }
-//        catch (Exception e) {
-//            System.out.println("Could not write results to csv file. An error occured:");
-//            System.out.println(e.getMessage());
-//        }
+        String resultsSavePath = "results.csv";
+        try {
+            WriteResults.writeResults(result, resultsSavePath);
+            System.out.println("Results csv file written at resultsSavePath: " + resultsSavePath);
+        }
+        catch (Exception e) {
+            System.out.println("Could not write results to csv file. An error occurred:");
+            System.out.println(e.getMessage());
+        }
 
     }
 }
