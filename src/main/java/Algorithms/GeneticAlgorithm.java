@@ -139,34 +139,50 @@ public class GeneticAlgorithm {
      */
     private UrbanMap mateMaps(UrbanMap map1, UrbanMap map2, int mutationChance) {
 
-
-
         UrbanMap childMap = new UrbanMap(map1);
-
 
         // There is a 50/50 chance that we will split the map vertically or horizontally:
         if(r.nextInt(2) == 0){
-            // Split Vertically
+            // Split Vertically (by Columns)
 
-            int splitPoint = map1.mapWidth/2;
+            // first split point will be at this random location
+            int splitPoint1 = r.nextInt(map1.mapWidth);
+            // first split point will be at this random location
+            int splitPoint2 = r.nextInt(map1.mapWidth);
 
-            // Just choose 50 percent left-and-right of each parent
+            if(splitPoint1 > splitPoint2){
+                int temp = splitPoint1;
+                splitPoint1 = splitPoint2;
+                splitPoint2 = temp;
+            }
+
+            // Go through all rows and choose the cols from splitPoint1-splitPoint2 to keep form map2.
             for(int row = 0; row < childMap.mapHeight; row++){
 
-                // // Take the 0-splitPoint elements of map1 for the child map
-                // Take the splitPoint-mapWidth elements of map2 for the child map
-                for(int secondCol = splitPoint; secondCol < map1.mapWidth; secondCol++){
+                // // Take the splitPoint1-splitPoint2 elements of map2 for the child map
+                // Take the rest of the elements from map1
+                for(int secondCol = splitPoint1; secondCol < splitPoint2; secondCol++){
                     // Set this terrain in the map to be map2's
                     childMap.replaceBuildingFromMap(row, secondCol, map2);
                 }
             }
         }
         else{
-            // Split Horizontally
-            int splitPoint = map1.mapHeight/2;
+            // Split Horizontally (by Rows)
 
-            // Just choose 50 percent left-and-right of each parent
-            for(int row = splitPoint; row < childMap.mapHeight; row++){
+            // first split point will be at this random location
+            int splitPoint1 = r.nextInt(map1.mapHeight);
+            // first split point will be at this random location
+            int splitPoint2 = r.nextInt(map1.mapHeight);
+
+            if(splitPoint1 > splitPoint2){
+                int temp = splitPoint1;
+                splitPoint1 = splitPoint2;
+                splitPoint2 = temp;
+            }
+
+            // Just choose the splitPoint1-splitPoint2 of map2 to give to the child
+            for(int row = splitPoint1; row < splitPoint2; row++){
 
                 // // Take the 0-splitPoint elements of map1 for the child map
                 // Take the splitPoint-mapheight elements of map2 for the child map

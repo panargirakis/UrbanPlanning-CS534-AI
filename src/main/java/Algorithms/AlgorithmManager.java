@@ -41,7 +41,7 @@ public class AlgorithmManager {
             int numChildren = 200; // The number of children a generation should create.
             int numNew = 100; // Add new additional random maps to the simulation (new 'Genes').
             int mutationChance = 5; // there is a 1/mutationChance chance that children will have some mutation.
-            long millisecondsToRun = 100; // Run for X Milliseconds
+            long millisecondsToRun = 60000; // Run for X Milliseconds
             this.finalResult = this.geneticAlgorithm.runGeneticAlgorithm(this.map, numGenerations, generationSizeElitism, numParents, numChildren, numNew, mutationChance, millisecondsToRun);
         }
 
